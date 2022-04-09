@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "76930291247",
+    "project_id": "piggram-7a6fb",
+    "storage_bucket": "piggram-7a6fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76930291247:android:dc7b8c2ecb53fcdadf58da",
+        "android_client_info": {
+          "package_name": "com.example.piggram_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "76930291247-l3rb28lorog9b847jtb6879pf7obdfoh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.piggram_mobile",
+            "certificate_hash": "b8ca01ab9f9bf2ff3e5ca43fd5804cba56e7635c"
+          }
+        },
+        {
+          "client_id": "76930291247-jmmubagl21j9bctjn3ee0qe27p5qifpt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3qQNIWIOquseDjVzdBS2zzLoRPFryyUs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "76930291247-jmmubagl21j9bctjn3ee0qe27p5qifpt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
