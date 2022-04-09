@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
     HomePage(),
     MessagesPage(),
     SearchPage(),
-    Profile(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {

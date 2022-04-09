@@ -7,4 +7,4 @@ abstract class ProfilePageEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ProfilePageInitEvent extends ProfilePageEvent {}
+class ProfilePageGetProfileEvent extends ProfilePageEvent {}
