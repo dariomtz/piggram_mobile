@@ -9,9 +9,11 @@ import 'home/home.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => ProfilePageBloc())],
-      child: const MyApp()));
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(
+        create: (context) =>
+            ProfilePageBloc()..add(ProfilePageGetProfileEvent()))
+  ], child: const MyApp()));
 }
 
 /// This is the main application widget.
