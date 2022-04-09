@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
+import 'package:piggram_mobile/home/search_page/bloc/search_page_bloc.dart';
 
 import 'home/home.dart';
 
@@ -11,8 +13,12 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MultiBlocProvider(providers: [
     BlocProvider(
-        create: (context) =>
-            ProfilePageBloc()..add(ProfilePageGetProfileEvent()))
+      create: (context) => ProfilePageBloc()..add(ProfilePageGetProfileEvent()),
+    ),
+    BlocProvider(
+      create: (context) => HomePageBloc()..add(HomePageLoadEvent()),
+    ),
+    BlocProvider(create: (context) => SearchPageBloc())
   ], child: const MyApp()));
 }
 
