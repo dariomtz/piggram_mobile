@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/auth/bloc/auth_bloc.dart';
+
 import 'package:piggram_mobile/home/home_page/home_page.dart';
 import 'package:piggram_mobile/home/messages_page/messages_page.dart';
 import 'package:piggram_mobile/home/profile_page/profile_page.dart';
@@ -35,6 +38,14 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('PigGram'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              BlocProvider.of<AuthBloc>(context).add(AuthSignOutEvent());
+            },
+          ),
+        ],
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
