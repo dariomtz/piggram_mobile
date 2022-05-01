@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/home/Post_page/post_page.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -7,20 +8,36 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<HomePageBloc, HomePageState>(
-        builder: (context, state) {
-          if (state is HomePageLoadingState) {
-            return CircularProgressIndicator();
-          }
-          if (state is HomePageErrorState) {
-            return Center(child: Text('Something went wrong try again'));
-          }
-          if (state is HomePageLoadedState) {
-            return PostList(posts: state.posts);
-          }
-          return Container();
-        },
-        listener: (context, state) {});
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => PostPage()));
+              },
+              child: Text("Create new Post")),
+        ),
+        BlocConsumer<HomePageBloc, HomePageState>(
+            builder: (context, state) {
+              if (state is HomePageLoadingState) {
+                return Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              if (state is HomePageErrorState) {
+                return Center(child: Text('Something went wrong try again'));
+              }
+              if (state is HomePageLoadedState) {
+                return PostList(posts: state.posts);
+              }
+              return Container();
+            },
+            listener: (context, state) {})
+      ],
+    );
   }
 }
 
@@ -39,21 +56,24 @@ class PostList extends StatelessWidget {
           (post) => Post(
               username: post["user"]["name"],
               userimage: post["user"]["image"],
-              image: post["image"]),
+              image: post["image"],
+              description: post["description"]),
         )
         .toList();
-    return ListView(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: posts,
     );
   }
 }
 
 class Post extends StatelessWidget {
-  final String username, userimage, image;
+  final String username, userimage, image, description;
   const Post({
     Key? key,
     required this.username,
     required this.userimage,
+    required this.description,
     required this.image,
   }) : super(key: key);
 
@@ -68,24 +88,30 @@ class Post extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  userimage != ""
-                      ? CircleAvatar(
-                          radius: 20,
-                          backgroundImage: NetworkImage(image),
-                        )
-                      : Icon(
-                          Icons.person,
-                          size: 90,
+                  Row(
+                    children: [
+                      userimage != ""
+                          ? CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(userimage),
+                            )
+                          : Icon(
+                              Icons.person,
+                              size: 90,
+                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          username,
+                          style: TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: Text(
-                      username,
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
+                      ),
+                    ],
                   ),
+                  Icon(Icons.star_border),
                 ],
               ),
             ),
@@ -94,6 +120,8 @@ class Post extends StatelessWidget {
             padding: const EdgeInsets.only(top: 8),
             child: Image.network(image),
           ),
+          Divider(),
+          Text(description),
           Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -129,9 +157,14 @@ class PostActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 8.0),
-      child: Icon(
-        icon,
-        size: 30,
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 30,
+          ),
+          Text("0")
+        ],
       ),
     );
   }
