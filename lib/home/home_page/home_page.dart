@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/home/Post_page/post_page.dart';
+import 'package:piggram_mobile/home/create_post_page/create_post_page.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,15 +10,6 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => PostPage()));
-              },
-              child: Text("Create new Post")),
-        ),
         BlocConsumer<HomePageBloc, HomePageState>(
             builder: (context, state) {
               if (state is HomePageLoadingState) {
