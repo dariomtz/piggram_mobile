@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:piggram_mobile/utils/user_requests.dart';
 
 part 'home_page_event.dart';
 part 'home_page_state.dart';
@@ -21,10 +22,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
           await FirebaseFirestore.instance.collection("post").limit(10).get();
       var posts = postDocs.docs.map((doc) => doc.data()).toList();
       for (var post in posts) {
-        var userdoc = await FirebaseFirestore.instance
-            .collection("user")
-            .doc(post["userId"])
-            .get();
+        var userdoc = await UserRequests.findById(post["userId"]);
         post["user"] = userdoc.data();
       }
 

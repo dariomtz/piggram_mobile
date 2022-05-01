@@ -74,39 +74,7 @@ class Post extends StatelessWidget {
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
-          Container(
-            color: Color.fromARGB(50, 100, 100, 100),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      userimage != ""
-                          ? CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(userimage),
-                            )
-                          : Icon(
-                              Icons.person,
-                              size: 90,
-                            ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Text(
-                          username,
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Icon(Icons.star_border),
-                ],
-              ),
-            ),
-          ),
+          UserCard(userImageURL: userimage, userName: username),
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Image.network(image),
@@ -155,6 +123,39 @@ class PostActionButton extends StatelessWidget {
             size: 30,
           ),
           Text("0")
+        ],
+      ),
+    );
+  }
+}
+
+class UserCard extends StatelessWidget {
+  final String userImageURL, userName;
+  const UserCard({Key? key, required this.userImageURL, required this.userName})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          userImageURL != ""
+              ? CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(userImageURL),
+                )
+              : Icon(
+                  Icons.person,
+                  size: 40,
+                ),
+          Padding(
+            padding: const EdgeInsets.only(left: 8),
+            child: Text(
+              userName,
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
