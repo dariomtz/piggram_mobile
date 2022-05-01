@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/home/create_post_page/create_post_page.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/like/bloc/like_bloc.dart';
 
@@ -133,8 +132,10 @@ class Post extends StatelessWidget {
                 BlocConsumer<LikeBloc, LikeState>(
                     builder: (context, state) {
                       if (state is LikeDoneState) {
-                        this.likes = state.likes;
-                        this.liked = !this.liked;
+                        if (this.postid == state.postId) {
+                          this.likes = state.likes;
+                          this.liked = !this.liked;
+                        }
                       }
                       return GestureDetector(
                         onTap: () {
