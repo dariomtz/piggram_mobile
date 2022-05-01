@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/auth/bloc/auth_bloc.dart';
+import 'package:piggram_mobile/home/create_post_page/create_post_page.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 
 import 'package:piggram_mobile/home/home_page/home_page.dart';
-import 'package:piggram_mobile/home/messages_page/messages_page.dart';
 import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
 import 'package:piggram_mobile/home/profile_page/profile_page.dart';
 import 'package:piggram_mobile/home/search_page/search_page.dart';
@@ -24,7 +24,7 @@ class _HomeState extends State<Home> {
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    MessagesPage(),
+    CreatePostPage(),
     SearchPage(),
     ProfilePage(),
   ];
@@ -71,8 +71,8 @@ class _HomeState extends State<Home> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            label: 'Messages',
+            icon: Icon(Icons.add),
+            label: 'New Post',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.search),

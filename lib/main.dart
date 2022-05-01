@@ -4,7 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/auth/bloc/auth_bloc.dart';
 import 'package:piggram_mobile/file/bloc/file_bloc.dart';
-import 'package:piggram_mobile/home/Post_page/bloc/post_bloc.dart';
+import 'package:piggram_mobile/home/create_post_page/bloc/post_bloc.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
 import 'package:piggram_mobile/home/search_page/bloc/search_page_bloc.dart';

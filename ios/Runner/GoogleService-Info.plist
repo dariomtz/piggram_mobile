@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>76930291247-ihir24n9q2bojlhqrmesuruckusdabj4.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.76930291247-ihir24n9q2bojlhqrmesuruckusdabj4</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>76930291247-9du7c47g7mhm60fpvvoeilcjcutjamb7.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyABOaTN2ISNv0bctel2N53mVGo-vv_bOis</string>
+	<key>GCM_SENDER_ID</key>
+	<string>76930291247</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.piggramMobile</string>
+	<key>PROJECT_ID</key>
+	<string>piggram-7a6fb</string>
+	<key>STORAGE_BUCKET</key>
+	<string>piggram-7a6fb.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:76930291247:ios:9926283e9700199cdf58da</string>
+</dict>
+</plist>
