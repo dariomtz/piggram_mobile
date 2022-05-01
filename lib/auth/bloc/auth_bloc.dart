@@ -1,11 +1,15 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:piggram_mobile/auth/user_auth_repository.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:piggram_mobile/utils/user_requests.dart';
+
+import '../../utils/file_requests.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -18,22 +22,39 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthRegisterEmailEvent>(_registerEmail);
     on<AuthSignInGoogleEvent>(_signInGoogle);
     on<AuthSignOutEvent>(_signOut);
+    on<AuthCreateUserEvent>(_create);
   }
 
   FutureOr<void> _signInEmail(
       AuthSignInEmailEvent event, Emitter<AuthState> emit) async {
     var res = await _userAuth.SignInEmailPassword(event.email, event.password);
-    if (res == 'user-not-found' || res == 'wrong-password') {
-      emit(AuthFirebaseErrorState(res!));
+    if (res != null) {
+      emit(AuthFirebaseErrorState(res));
       return;
     }
-    emit(AuthSignedInState());
+    //If not created the acount go to first sign in
+    if (await UserRequests.isRegistered(
+        FirebaseAuth.instance.currentUser!.uid)) {
+      emit(AuthSignedInState());
+    } else {
+      emit(AuthFirstSignInState(
+          description: "Hey, I'm using PigGram",
+          name: FirebaseAuth.instance.currentUser?.displayName));
+    }
   }
 
   FutureOr<void> _verifySignIn(
-      AuthVerifySignInEvent event, Emitter<AuthState> emit) {
+      AuthVerifySignInEvent event, Emitter<AuthState> emit) async {
     if (_userAuth.isAuthenticated()) {
-      emit(AuthSignedInState());
+      var res =
+          await UserRequests.findById(FirebaseAuth.instance.currentUser!.uid);
+      if (res.exists) {
+        emit(AuthSignedInState());
+      } else {
+        emit(AuthFirstSignInState(
+            description: "Hey, I'm using PigGram",
+            name: FirebaseAuth.instance.currentUser?.displayName));
+      }
     } else {
       emit(AuthUnsignedInState());
     }
@@ -51,22 +72,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthErrorState(res));
       return;
     }
-    emit(AuthSignedInState());
+    emit(AuthFirstSignInState(
+        description: "Hey, I'm using PigGram",
+        name: FirebaseAuth.instance.currentUser?.displayName));
   }
 
   FutureOr<void> _signInGoogle(
       AuthSignInGoogleEvent event, Emitter<AuthState> emit) async {
     await _userAuth.signInGoogle();
     //After SignIn find if current acoount contains an entry in the database
-    var docsRef = await FirebaseFirestore.instance
-        .collection("user")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
-    if (!docsRef.exists) {
-      emit(AuthFirstSignInState());
-      return;
+    if (await UserRequests.isRegistered(
+        FirebaseAuth.instance.currentUser!.uid)) {
+      emit(AuthSignedInState());
+    } else {
+      emit(AuthFirstSignInState(
+          description: "Hey, I'm using PigGram",
+          name: FirebaseAuth.instance.currentUser?.displayName));
     }
-    emit(AuthSignedInState());
   }
 
   FutureOr<void> _signOut(
@@ -78,5 +100,47 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _userAuth.signoutFirebaseUser();
     }
     emit(AuthUnsignedInState());
+  }
+
+  FutureOr<void> _create(
+      AuthCreateUserEvent event, Emitter<AuthState> emit) async {
+    try {
+      String? url = await FileRequests.uploadImage(event.image);
+      if (url == null) {
+        emit(AuthErrorState("Unable to upload the image"));
+        emit(AuthFirstSignInState(
+            name: event.name,
+            username: event.username,
+            image: event.image,
+            description: event.description,
+            dateOfBirth: event.dateOfBirth));
+        return;
+      }
+      bool res = await UserRequests.registerAccount(
+          name: event.name,
+          username: event.username,
+          image: url,
+          description: event.description,
+          dateOfBirth: event.dateOfBirth);
+      if (!res) {
+        emit(AuthErrorState("Username already exist"));
+        emit(AuthFirstSignInState(
+            name: event.name,
+            username: event.username,
+            image: event.image,
+            description: event.description,
+            dateOfBirth: event.dateOfBirth));
+        return;
+      }
+      emit(AuthSignedInState());
+    } catch (err) {
+      emit(AuthErrorState("Something went wrong"));
+      emit(AuthFirstSignInState(
+          name: event.name,
+          username: event.username,
+          image: event.image,
+          description: event.description,
+          dateOfBirth: event.dateOfBirth));
+    }
   }
 }

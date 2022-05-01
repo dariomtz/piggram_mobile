@@ -55,8 +55,11 @@ class SearchResultList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: users
-          .map((user) =>
-              SearchResultItem(username: user["username"], name: user["name"]))
+          .map((user) => SearchResultItem(
+                username: user["username"],
+                name: user["name"],
+                imageUrl: user["image"],
+              ))
           .toList(),
     );
   }
@@ -65,8 +68,10 @@ class SearchResultList extends StatelessWidget {
 class SearchResultItem extends StatelessWidget {
   final String username;
   final String name;
+  final String imageUrl;
   const SearchResultItem({
     Key? key,
+    required this.imageUrl,
     required this.username,
     required this.name,
   }) : super(key: key);
@@ -80,10 +85,7 @@ class SearchResultItem extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Icon(
-              Icons.person,
-              size: 40,
-            ),
+            child: CircleAvatar(backgroundImage: NetworkImage(imageUrl)),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,7 +94,7 @@ class SearchResultItem extends StatelessWidget {
                 name,
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
-              Text(username)
+              Text("@$username")
             ],
           )
         ],

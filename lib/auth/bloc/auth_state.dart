@@ -31,4 +31,14 @@ class AuthFirebaseErrorState extends AuthState {
   List<Object> get props => [error];
 }
 
-class AuthFirstSignInState extends AuthState {}
+class AuthFirstSignInState extends AuthState {
+  final String? name, username, description;
+  final Uint8List? image;
+  final DateTime? dateOfBirth;
+  AuthFirstSignInState(
+      {this.name,
+      this.username,
+      this.description,
+      this.image,
+      this.dateOfBirth});
+}

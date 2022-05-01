@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 part 'profile_page_event.dart';
 part 'profile_page_state.dart';
@@ -20,7 +21,7 @@ class ProfilePageBloc extends Bloc<ProfilePageEvent, ProfilePageState> {
     try {
       //get user info from firebase
       //TODO: change example doc id to use the user id after implementing authentication.
-      const _userId = "AfqGBa3fUuDwAxuHkp2o";
+      String _userId = FirebaseAuth.instance.currentUser!.uid;
       //Get user info from firebase
       var userInfo = await FirebaseFirestore.instance
           .collection("user")

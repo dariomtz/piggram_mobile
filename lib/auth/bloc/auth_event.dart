@@ -30,3 +30,18 @@ class AuthRegisterEmailEvent extends AuthEvent {
 class AuthSignInGoogleEvent extends AuthEvent {}
 
 class AuthSignOutEvent extends AuthEvent {}
+
+class AuthCreateUserEvent extends AuthEvent {
+  final String name, username, description;
+  final Uint8List image;
+  final DateTime dateOfBirth;
+
+  AuthCreateUserEvent(
+      {required this.name,
+      required this.username,
+      required this.description,
+      required this.image,
+      required this.dateOfBirth});
+  @override
+  List<Object> get props => [name, username, description, image, dateOfBirth];
+}
