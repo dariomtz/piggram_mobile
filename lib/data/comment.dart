@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:piggram_mobile/data/user.dart';
 
 class CommentData {
   final String description, postId, userId;
   final String? id;
+  UserData? user;
   final DateTime publishedAt;
 
   CommentData(
