@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/data/like.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/like/bloc/like_bloc.dart';
 
@@ -65,7 +66,8 @@ class PostList extends StatelessWidget {
 class Post extends StatelessWidget {
   final String username, userimage, image, description, postid;
   bool liked;
-  List<dynamic> likes, comments;
+  List<LikeData> likes;
+  List<dynamic> comments;
   Post(
       {Key? key,
       required this.username,

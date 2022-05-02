@@ -11,7 +11,7 @@ class LikeInitial extends LikeState {}
 
 class LikeDoneState extends LikeState {
   final String postId;
-  final List<Map<String, dynamic>> likes;
+  final List<LikeData> likes;
 
   LikeDoneState(this.postId, this.likes);
 
