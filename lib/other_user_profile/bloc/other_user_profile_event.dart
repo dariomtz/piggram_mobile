@@ -7,10 +7,18 @@ abstract class OtherUserProfileEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class OtherUserProfileLoadEvent extends OtherUserProfileEvent {
+class OtherUserProfileLoad extends OtherUserProfileEvent {
   final String userId;
-  const OtherUserProfileLoadEvent({required this.userId});
+  const OtherUserProfileLoad({required this.userId});
 
   @override
   List<Object> get props => [userId];
+}
+
+class OtherUserProfileLoadByUsername extends OtherUserProfileEvent {
+  final String username;
+  const OtherUserProfileLoadByUsername({required this.username});
+
+  @override
+  List<Object> get props => [username];
 }

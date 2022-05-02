@@ -167,7 +167,7 @@ class UserCard extends StatelessWidget {
     return TextButton(
       onPressed: () {
         BlocProvider.of<OtherUserProfileBloc>(context)
-            .add(OtherUserProfileLoadEvent(userId: userId));
+            .add(OtherUserProfileLoad(userId: userId));
         Navigator.push(context,
             MaterialPageRoute(builder: ((context) => OtherUserProfile())));
       },
