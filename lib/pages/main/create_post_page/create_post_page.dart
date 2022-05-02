@@ -3,11 +3,19 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/pages/main/create_post_page/bloc/post_bloc.dart';
+import 'package:piggram_mobile/pages/main/create_post_page/file/bloc/file_bloc.dart';
 import 'package:piggram_mobile/pages/main/create_post_page/file/image_handler.dart';
 
-class CreatePostPage extends StatelessWidget {
+class CreatePostPage extends StatefulWidget {
   CreatePostPage({Key? key}) : super(key: key);
+
+  @override
+  State<CreatePostPage> createState() => _CreatePostPageState();
+}
+
+class _CreatePostPageState extends State<CreatePostPage> {
   Uint8List? image;
+
   final _descriptionController = TextEditingController();
 
   @override
@@ -17,7 +25,6 @@ class CreatePostPage extends StatelessWidget {
       child: ListView(
         children: [
           ImageHandeler(
-            image: this.image,
             onLoaded: (image) {
               this.image = image;
             },
@@ -55,7 +62,9 @@ class CreatePostPage extends StatelessWidget {
               ScaffoldMessenger.of(context)
                 ..hideCurrentSnackBar()
                 ..showSnackBar(SnackBar(content: Text("Post Uploaded")));
-              Navigator.of(context).pop();
+              BlocProvider.of<FileBloc>(context).add(FileCleanEvent());
+              this.image = null;
+              this._descriptionController.text = '';
             }
             if (state is PostErrorState) {
               ScaffoldMessenger.of(context)

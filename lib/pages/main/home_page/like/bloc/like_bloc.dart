@@ -5,7 +5,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:piggram_mobile/data/like.dart';
+import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/utils/likes_requests.dart';
+import 'package:piggram_mobile/utils/user_requests.dart';
 
 part 'like_event.dart';
 part 'like_state.dart';
@@ -29,7 +31,11 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
         .add({"postId": event.postId, "userId": userId});
 
     var likes = await LikesRequests.getByPostId(event.postId);
-    emit(LikeDoneState(event.postId, likes));
+    List<UserData> users = [];
+    for (var like in likes) {
+      users.add((await UserRequests.findById(like.userId)).data()!);
+    }
+    emit(LikeDoneState(event.postId, users));
   }
 
   FutureOr<void> _onRemove(
@@ -43,6 +49,10 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
     }
     await FirebaseFirestore.instance.collection("likes").doc(like.id).delete();
     var likes = await LikesRequests.getByPostId(event.postId);
-    emit(LikeDoneState(event.postId, likes));
+    List<UserData> users = [];
+    for (var like in likes) {
+      users.add((await UserRequests.findById(like.userId)).data()!);
+    }
+    emit(LikeDoneState(event.postId, users));
   }
 }

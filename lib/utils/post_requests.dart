@@ -16,20 +16,21 @@ class PostRequests {
           toFirestore: (post, _) => post.toJson());
 
   static Future<List<PostData>> getPosts() async {
-    var postDocs = await postReq.limit(10).get();
+    var postDocs =
+        await postReq.limit(10).orderBy("publishedAt", descending: true).get();
     var posts = postDocs.docs.map((e) => e.data()).toList();
     for (var post in posts) {
       var userdoc = await UserRequests.findById(post.userId);
       post.user = userdoc.data();
 
       //Get likes of post
-      post.likes = await LikesRequests.getByPostId(post.id);
+      post.likes = (await LikesRequests.getByPostId(post.id)).length;
 
       post.liked = (await LikesRequests.find(
               post.id, FirebaseAuth.instance.currentUser!.uid)) !=
           null;
       //Get list of comments
-      post.comments = await CommentRequests.getByPostId(post.id!);
+      post.comments = (await CommentRequests.getByPostId(post.id!)).length;
     }
     return posts;
   }
@@ -42,7 +43,7 @@ class PostRequests {
       "description": description,
       "image": image,
       "userId": userId,
-      "publishedAt": DateTime.now()
+      "publishedAt": Timestamp.fromDate(DateTime.now())
     }));
   }
 }

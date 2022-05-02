@@ -13,8 +13,9 @@ class HomePageLoadingState extends HomePageState {}
 
 class HomePageLoadedState extends HomePageState {
   final List<PostData> posts;
+  final List<List<UserData>> likes;
 
-  HomePageLoadedState({required this.posts});
+  HomePageLoadedState({required this.posts, required this.likes});
 
   @override
   List<Object> get props => [posts];
