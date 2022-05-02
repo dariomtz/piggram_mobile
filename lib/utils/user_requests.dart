@@ -13,6 +13,10 @@ class UserRequests {
     return usersRef.doc(id).get();
   };
 
+  static final findByUsername = (String username) async {
+    return usersRef.where("username", isEqualTo: username).get();
+  };
+
   static final isRegistered = (String id) async {
     var res = await usersRef.doc(id).get();
     return res.exists;
@@ -24,7 +28,7 @@ class UserRequests {
       required String description,
       required String image,
       required DateTime dateOfBirth}) async {
-    var exist = await usersRef.where("username", isEqualTo: username).get();
+    var exist = await UserRequests.findByUsername(username);
     if (exist.size != 0) {
       return false;
     }
@@ -71,5 +75,29 @@ class UserRequests {
 
     return ProfileData(
         user: _user, posts: _posts, followers: followers, following: following);
+  };
+
+  static final searchUser = (String query) async {
+    //find by name
+    var _docs = await usersRef
+        .where("name", isGreaterThan: query)
+        .where("name", isLessThan: query + '\uf8ff')
+        .get();
+    var _users = _docs.docs.map((doc) => doc.data()).toList();
+    var _userset = _users.map((e) => e.username).toSet();
+
+    //find by username
+    _docs = await usersRef
+        .where("username", isGreaterThan: query)
+        .where("username", isLessThan: query + '\uf8ff')
+        .get();
+
+    //join results
+    _docs.docs.map((doc) => doc.data()).forEach((doc) {
+      if (!_userset.contains(doc.username)) {
+        _users.add(doc);
+      }
+    });
+    return _users;
   };
 }
