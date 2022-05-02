@@ -10,6 +10,7 @@ import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
 import 'package:piggram_mobile/home/search_page/bloc/search_page_bloc.dart';
 import 'package:piggram_mobile/login/first_sign_in.dart';
 import 'package:piggram_mobile/login/login_page.dart';
+import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
 
 import 'home/home.dart';
 
@@ -26,7 +27,8 @@ void main() async {
     BlocProvider(create: (context) => SearchPageBloc()),
     BlocProvider(create: (context) => AuthBloc()..add(AuthVerifySignInEvent())),
     BlocProvider(create: (context) => FileBloc()),
-    BlocProvider(create: (context) => PostBloc())
+    BlocProvider(create: (context) => PostBloc()),
+    BlocProvider(create: (context) => OtherUserProfileBloc()),
   ], child: const MyApp()));
 }
 

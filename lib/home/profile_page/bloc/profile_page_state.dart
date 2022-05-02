@@ -14,11 +14,10 @@ class ProfilePageLoadingState extends ProfilePageState {}
 class ProfilePageErrorState extends ProfilePageState {}
 
 class ProfilePageLoadedState extends ProfilePageState {
-  final Map<String, dynamic> user;
-  final List<Map<String, dynamic>> posts;
+  final ProfileData profileData;
 
-  ProfilePageLoadedState({required this.user, required this.posts});
+  ProfilePageLoadedState({required this.profileData});
 
   @override
-  List<Object> get props => [user, posts];
+  List<Object> get props => [profileData];
 }

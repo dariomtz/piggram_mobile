@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:piggram_mobile/data/profile.dart';
 import 'package:piggram_mobile/data/user.dart';
 
 class UserRequests {
@@ -37,5 +38,38 @@ class UserRequests {
         creationTimestamp: DateTime.now());
     await usersRef.doc(FirebaseAuth.instance.currentUser!.uid).set(user);
     return true;
+  };
+
+  static final getProfile = (String id) async {
+    //Get user info from firebase
+    var userInfo = await UserRequests.findById(id);
+    UserData _user = userInfo.data()!;
+
+    //get the count of followers
+    var followersDoc = await FirebaseFirestore.instance
+        .collection("follow")
+        .where("followeeId", isEqualTo: id)
+        .get();
+
+    int followers = followersDoc.docs.length;
+
+    //Get count of following
+    var followingDoc = await FirebaseFirestore.instance
+        .collection("follow")
+        .where("followerId", isEqualTo: id)
+        .get();
+
+    int following = followingDoc.docs.length;
+
+    //get posts from firebase
+    var postsDoc = await FirebaseFirestore.instance
+        .collection("post")
+        .where("userId", isEqualTo: id)
+        .get();
+
+    var _posts = postsDoc.docs.map((post) => post.data()).toList();
+
+    return ProfileData(
+        user: _user, posts: _posts, followers: followers, following: following);
   };
 }

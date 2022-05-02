@@ -28,6 +28,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       emit(HomePageLoadedState(posts: posts));
     } catch (e) {
+      print(e);
       emit(HomePageErrorState());
     }
   }
