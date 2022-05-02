@@ -8,11 +8,9 @@ import 'package:piggram_mobile/pages/main/create_post_page/file/bloc/file_bloc.d
 class ImageHandeler extends StatelessWidget {
   const ImageHandeler({
     Key? key,
-    required this.image,
     required this.onLoaded,
   }) : super(key: key);
 
-  final Uint8List? image;
   final Function(Uint8List) onLoaded;
 
   @override
@@ -43,9 +41,18 @@ class ImageHandeler extends StatelessWidget {
                 onLoaded(state.image);
                 return AspectRatio(
                   aspectRatio: 16 / 9,
-                  child: Image.memory(
-                    state.image,
-                    fit: BoxFit.cover,
+                  child: GestureDetector(
+                    onTap: () => showDialog(
+                        context: context,
+                        builder: (context) => ImageDialog(
+                              image: state.image,
+                            )),
+                    child: SingleChildScrollView(
+                      child: Image.memory(
+                        state.image,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 );
               }
@@ -109,6 +116,31 @@ class ImageHandeler extends StatelessWidget {
             ),
           ],
         ),
+      ],
+    );
+  }
+}
+
+class ImageDialog extends StatelessWidget {
+  final Uint8List image;
+  const ImageDialog({
+    Key? key,
+    required this.image,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Image.memory(
+        this.image,
+        fit: BoxFit.cover,
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('ok'))
       ],
     );
   }

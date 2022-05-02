@@ -9,8 +9,8 @@ class PostData {
   bool? liked;
   final String description, image, userId;
   final DateTime publishedAt;
-  List<LikeData>? likes;
-  List<CommentData>? comments;
+  int? likes;
+  int? comments;
 
   PostData(
       {this.id,
@@ -20,7 +20,7 @@ class PostData {
       required this.userId});
   PostData.fromJson(Map<String, Object?> json)
       : this(
-            id: json["id"] as String,
+            id: json["id"] != null ? json["id"] as String : '',
             description: json["description"] as String,
             image: json["image"] as String,
             userId: json["userId"] as String,

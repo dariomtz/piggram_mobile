@@ -22,3 +22,5 @@ class FileUploadImageEvent extends FileEvent {
   @override
   List<Object> get props => [image];
 }
+
+class FileCleanEvent extends FileEvent {}

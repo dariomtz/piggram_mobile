@@ -33,11 +33,9 @@ class FirstSignIn extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            ImageHandeler(
-                image: image,
-                onLoaded: (image) {
-                  this.image = image;
-                }),
+            ImageHandeler(onLoaded: (image) {
+              this.image = image;
+            }),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
