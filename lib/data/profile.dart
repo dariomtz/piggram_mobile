@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:piggram_mobile/data/follow.dart';
 import 'package:piggram_mobile/data/user.dart';
 
 @immutable
 class ProfileData {
   final UserData user;
-  // $$$TODO: Change to post instead of map
+  // TODO: Change to post instead of map
   final List<Map<String, dynamic>> posts;
-  final int followers, following;
+  final List<FollowData> followers, following;
 
   ProfileData(
       {required this.user,

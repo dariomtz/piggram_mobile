@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:piggram_mobile/data/follow.dart';
 import 'package:piggram_mobile/data/profile.dart';
 import 'package:piggram_mobile/data/user.dart';
+import 'package:piggram_mobile/utils/follow_requests.dart';
 
 class UserRequests {
   static final CollectionReference<UserData> usersRef =
@@ -49,23 +51,11 @@ class UserRequests {
     var userInfo = await UserRequests.findById(id);
     UserData _user = userInfo.data()!;
 
-    //get the count of followers
-    var followersDoc = await FirebaseFirestore.instance
-        .collection("follow")
-        .where("followeeId", isEqualTo: id)
-        .get();
-
-    int followers = followersDoc.docs.length;
-
-    //Get count of following
-    var followingDoc = await FirebaseFirestore.instance
-        .collection("follow")
-        .where("followerId", isEqualTo: id)
-        .get();
-
-    int following = followingDoc.docs.length;
+    List<FollowData> followers = await FollowRequests.getFollowers(id);
+    List<FollowData> following = await FollowRequests.getFollowing(id);
 
     //get posts from firebase
+    // TODO: Change this to post data list for profile
     var postsDoc = await FirebaseFirestore.instance
         .collection("post")
         .where("userId", isEqualTo: id)

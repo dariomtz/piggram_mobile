@@ -55,13 +55,19 @@ class Profile extends StatelessWidget {
               num: profileData.posts.length,
               name: 'Posts',
             ),
-            ProfileStat(
-              num: profileData.followers,
-              name: 'Followers',
+            GestureDetector(
+              onTap: () => print("tapped followers"),
+              child: ProfileStat(
+                num: profileData.followers.length,
+                name: 'Followers',
+              ),
             ),
-            ProfileStat(
-              num: profileData.following,
-              name: 'Following',
+            GestureDetector(
+              onTap: () => print("tapped following"),
+              child: ProfileStat(
+                num: profileData.following.length,
+                name: 'Following',
+              ),
             ),
           ]),
         ),
