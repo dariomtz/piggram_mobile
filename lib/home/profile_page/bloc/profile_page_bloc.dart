@@ -5,6 +5,9 @@ import 'package:equatable/equatable.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:piggram_mobile/data/profile.dart';
+import 'package:piggram_mobile/data/user.dart';
+import 'package:piggram_mobile/utils/user_requests.dart';
 
 part 'profile_page_event.dart';
 part 'profile_page_state.dart';
@@ -19,43 +22,10 @@ class ProfilePageBloc extends Bloc<ProfilePageEvent, ProfilePageState> {
     //Loads the information needed in profile page from firebase
     emit(ProfilePageLoadingState());
     try {
-      //get user info from firebase
-      //TODO: change example doc id to use the user id after implementing authentication.
       String _userId = FirebaseAuth.instance.currentUser!.uid;
-      //Get user info from firebase
-      var userInfo = await FirebaseFirestore.instance
-          .collection("user")
-          .doc(_userId)
-          .get();
-      var _user = userInfo.data();
+      ProfileData data = await UserRequests.getProfile(_userId);
 
-      //get the count of followers
-      var followersDoc = await FirebaseFirestore.instance
-          .collection("follow")
-          .where("followeeId", isEqualTo: _userId)
-          .get();
-
-      _user!["followers"] = followersDoc.docs.length;
-
-      //Get count of following
-      var followingDoc = await FirebaseFirestore.instance
-          .collection("follow")
-          .where("followerId", isEqualTo: _userId)
-          .get();
-
-      _user["following"] = followingDoc.docs.length;
-
-      //get posts from firebase
-      var postsDoc = await FirebaseFirestore.instance
-          .collection("post")
-          .where("userId", isEqualTo: _userId)
-          .get();
-
-      var _posts = postsDoc.docs.map((post) => post.data()).toList();
-
-      _user["posts"] = postsDoc.docs.length;
-
-      emit(ProfilePageLoadedState(user: _user, posts: _posts));
+      emit(ProfilePageLoadedState(profileData: data));
     } catch (e) {
       emit(ProfilePageErrorState());
     }

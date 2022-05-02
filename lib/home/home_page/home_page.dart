@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/like.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/like/bloc/like_bloc.dart';
+import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/other_user_profile/other_user_profile.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -50,8 +52,9 @@ class PostList extends StatelessWidget {
               postid: post["id"],
               comments: post["comments"],
               likes: post["likes"],
-              username: post["user"]["name"],
-              userimage: post["user"]["image"],
+              username: post["user"].displayName,
+              userimage: post["user"].photoUrl,
+              userId: post["userId"],
               image: post["image"],
               description: post["description"]),
         )
@@ -64,12 +67,13 @@ class PostList extends StatelessWidget {
 }
 
 class Post extends StatelessWidget {
-  final String username, userimage, image, description, postid;
+  final String username, userimage, userId, image, description, postid;
   bool liked;
   List<LikeData> likes;
   List<dynamic> comments;
   Post(
       {Key? key,
+      required this.userId,
       required this.username,
       required this.userimage,
       required this.description,
@@ -86,38 +90,10 @@ class Post extends StatelessWidget {
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
-          Container(
-            color: Color.fromARGB(50, 100, 100, 100),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      userimage != ""
-                          ? CircleAvatar(
-                              radius: 20,
-                              backgroundImage: NetworkImage(userimage),
-                            )
-                          : Icon(
-                              Icons.person,
-                              size: 90,
-                            ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Text(
-                          username,
-                          style: TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Icon(Icons.star_border),
-                ],
-              ),
-            ),
+          UserCard(
+            userImageURL: userimage,
+            userName: username,
+            userId: userId,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -194,6 +170,54 @@ class PostActionButton extends StatelessWidget {
           ),
           Text('$count')
         ],
+      ),
+    );
+  }
+}
+
+class UserCard extends StatelessWidget {
+  final String userImageURL, userName, userId;
+  const UserCard(
+      {Key? key,
+      required this.userImageURL,
+      required this.userName,
+      required this.userId})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        BlocProvider.of<OtherUserProfileBloc>(context)
+            .add(OtherUserProfileLoadEvent(userId: userId));
+        Navigator.push(context,
+            MaterialPageRoute(builder: ((context) => OtherUserProfile())));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            userImageURL != ""
+                ? CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(userImageURL),
+                  )
+                : Icon(
+                    Icons.person,
+                    size: 40,
+                  ),
+            Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: Text(
+                userName,
+                style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

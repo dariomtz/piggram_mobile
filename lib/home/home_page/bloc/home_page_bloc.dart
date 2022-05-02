@@ -28,11 +28,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
         return t;
       }).toList();
       for (var post in posts) {
-        //Get data of post user owner
-        var userdoc = await FirebaseFirestore.instance
-            .collection("user")
-            .doc(post["userId"])
-            .get();
+        var userdoc = await UserRequests.findById(post["userId"]);
         post["user"] = userdoc.data();
 
         //Get likes of post
@@ -59,6 +55,7 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
 
       emit(HomePageLoadedState(posts: posts));
     } catch (e) {
+      print(e);
       emit(HomePageErrorState());
     }
   }

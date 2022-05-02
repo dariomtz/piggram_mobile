@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/data/profile.dart';
 import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -7,22 +8,14 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProfilePageBloc, ProfilePageState>(
-      listener: (context, state) {},
+    return BlocBuilder<ProfilePageBloc, ProfilePageState>(
       builder: (context, state) {
         if (state is ProfilePageLoadingState) {
           return CircularProgressIndicator();
         }
         if (state is ProfilePageLoadedState) {
           return Profile(
-            name: state.user["name"],
-            usename: state.user["username"],
-            description: state.user["description"],
-            posts: state.posts,
-            followers: state.user["followers"],
-            following: state.user["following"],
-            image: state.user["image"],
-            postsCount: state.user["posts"],
+            profileData: state.profileData,
           );
         }
         if (state is ProfilePageErrorState) {
@@ -39,19 +32,10 @@ class ProfilePage extends StatelessWidget {
 }
 
 class Profile extends StatelessWidget {
-  final String name, usename, description, image;
-  final int postsCount, followers, following;
-  final List<Map<String, dynamic>> posts;
+  final ProfileData profileData;
   const Profile({
     Key? key,
-    required this.name,
-    required this.usename,
-    required this.description,
-    required this.image,
-    required this.postsCount,
-    required this.followers,
-    required this.following,
-    required this.posts,
+    required this.profileData,
   }) : super(key: key);
 
   @override
@@ -62,27 +46,21 @@ class Profile extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Row(children: [
             Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: image != ""
-                  ? CircleAvatar(
-                      radius: 50,
-                      backgroundImage: NetworkImage(image),
-                    )
-                  : Icon(
-                      Icons.person,
-                      size: 90,
-                    ),
-            ),
+                padding: const EdgeInsets.only(right: 8.0),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage: NetworkImage(profileData.user.photoUrl),
+                )),
             ProfileStat(
-              num: postsCount,
+              num: profileData.posts.length,
               name: 'Posts',
             ),
             ProfileStat(
-              num: followers,
+              num: profileData.followers,
               name: 'Followers',
             ),
             ProfileStat(
-              num: following,
+              num: profileData.following,
               name: 'Following',
             ),
           ]),
@@ -93,19 +71,20 @@ class Profile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                name,
+                profileData.user.displayName,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               Text(
-                '@' + usename,
+                '@' + profileData.user.username,
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
               ),
-              Text(description),
+              Text(profileData.user.description),
             ],
           ),
         ),
+        //TODO: Add indicator when no posts
         PictureMiniatureList(
-          posts: posts,
+          posts: profileData.posts,
         ),
       ],
     );
