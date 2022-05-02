@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/like.dart';
+import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/like/bloc/like_bloc.dart';
 import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
@@ -36,7 +37,7 @@ class HomePage extends StatelessWidget {
 }
 
 class PostList extends StatelessWidget {
-  final List<Map<String, dynamic>> posts;
+  final List<PostData> posts;
   const PostList({
     Key? key,
     required this.posts,
@@ -47,16 +48,7 @@ class PostList extends StatelessWidget {
     List<Widget> posts = this
         .posts
         .map(
-          (post) => Post(
-              liked: post["liked"],
-              postid: post["id"],
-              comments: post["comments"],
-              likes: post["likes"],
-              username: post["user"].displayName,
-              userimage: post["user"].photoUrl,
-              userId: post["userId"],
-              image: post["image"],
-              description: post["description"]),
+          (post) => Post(post: post),
         )
         .toList();
     return Column(
@@ -67,22 +59,8 @@ class PostList extends StatelessWidget {
 }
 
 class Post extends StatelessWidget {
-  final String username, userimage, userId, image, description, postid;
-  bool liked;
-  List<LikeData> likes;
-  List<dynamic> comments;
-  Post(
-      {Key? key,
-      required this.userId,
-      required this.username,
-      required this.userimage,
-      required this.description,
-      required this.image,
-      required this.comments,
-      required this.likes,
-      required this.postid,
-      required this.liked})
-      : super(key: key);
+  final PostData post;
+  Post({Key? key, required this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,16 +69,16 @@ class Post extends StatelessWidget {
       child: Column(
         children: [
           UserCard(
-            userImageURL: userimage,
-            userName: username,
-            userId: userId,
+            userImageURL: post.user!.photoUrl,
+            userName: post.user!.username,
+            userId: post.userId,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: Image.network(image),
+            child: Image.network(post.image),
           ),
           Divider(),
-          Text(description),
+          Text(post.description),
           Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -110,32 +88,32 @@ class Post extends StatelessWidget {
                 BlocConsumer<LikeBloc, LikeState>(
                     builder: (context, state) {
                       if (state is LikeDoneState) {
-                        if (this.postid == state.postId) {
-                          this.likes = state.likes;
-                          this.liked = !this.liked;
+                        if (this.post.id == state.postId) {
+                          this.post.likes = state.likes;
+                          this.post.liked = !(this.post.liked!);
                         }
                       }
                       return GestureDetector(
                         onTap: () {
-                          if (this.liked) {
+                          if (this.post.liked!) {
                             BlocProvider.of<LikeBloc>(context)
-                                .add(LikeRemoveEvent(this.postid));
+                                .add(LikeRemoveEvent(this.post.id!));
                           } else {
                             BlocProvider.of<LikeBloc>(context)
-                                .add(LikeAddEvent(this.postid));
+                                .add(LikeAddEvent(this.post.id!));
                           }
                         },
                         child: PostActionButton(
                           icon: Icons.thumb_up,
-                          count: this.likes.length,
-                          color: this.liked ? Colors.blue : null,
+                          count: this.post.likes!.length,
+                          color: (this.post.liked!) ? Colors.blue : null,
                         ),
                       );
                     },
                     listener: (context, state) {}),
                 PostActionButton(
                   icon: Icons.comment,
-                  count: comments.length,
+                  count: post.comments!.length,
                 ),
               ],
             ),

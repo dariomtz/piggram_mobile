@@ -12,7 +12,7 @@ class HomePageInitial extends HomePageState {}
 class HomePageLoadingState extends HomePageState {}
 
 class HomePageLoadedState extends HomePageState {
-  final List<Map<String, dynamic>> posts;
+  final List<PostData> posts;
 
   HomePageLoadedState({required this.posts});
 
