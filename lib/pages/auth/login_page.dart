@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/auth/bloc/auth_bloc.dart';
+import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);

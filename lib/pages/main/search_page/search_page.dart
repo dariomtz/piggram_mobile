@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/user.dart';
-import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
-import 'package:piggram_mobile/other_user_profile/other_user_profile.dart';
+import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/pages/other_user_profile/other_user_profile.dart';
 
 import 'bloc/search_page_bloc.dart';
 

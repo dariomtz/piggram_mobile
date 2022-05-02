@@ -5,8 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import '../../../utils/file_requests.dart';
+import 'package:piggram_mobile/utils/file_requests.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';

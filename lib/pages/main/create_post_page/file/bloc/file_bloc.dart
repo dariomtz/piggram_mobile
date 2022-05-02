@@ -4,8 +4,7 @@ import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../../utils/file_requests.dart';
+import 'package:piggram_mobile/utils/file_requests.dart';
 
 part 'file_event.dart';
 part 'file_state.dart';

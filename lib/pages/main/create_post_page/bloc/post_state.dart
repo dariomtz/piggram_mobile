@@ -12,6 +12,9 @@ class PostInitial extends PostState {}
 class PostUploadedState extends PostState {}
 
 class PostErrorState extends PostState {
-  String error;
+  final String error;
   PostErrorState(this.error);
+
+  @override
+  List<Object> get props => [error];
 }

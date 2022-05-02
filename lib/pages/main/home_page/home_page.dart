@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/like.dart';
-import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
-import 'package:piggram_mobile/like/bloc/like_bloc.dart';
-import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
-import 'package:piggram_mobile/other_user_profile/other_user_profile.dart';
+import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
+import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
+import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/pages/other_user_profile/other_user_profile.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);

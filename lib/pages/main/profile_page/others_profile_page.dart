@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:piggram_mobile/data/profile.dart';
-import 'package:piggram_mobile/home/profile_page/profile_page.dart';
+import 'package:piggram_mobile/pages/main/profile_page/profile_page.dart';
 
 class OtherUserProfilePage extends StatelessWidget {
   final ProfileData profileData;

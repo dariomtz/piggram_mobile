@@ -13,8 +13,10 @@ class FileRequests {
         return await file.readAsBytes();
       }
     } catch (e) {
+      print(e);
       return null;
     }
+    return null;
   };
   static final uploadImage = (Uint8List image) async {
     //get date

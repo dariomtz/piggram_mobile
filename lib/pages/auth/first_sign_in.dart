@@ -2,9 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/auth/bloc/auth_bloc.dart';
-
-import '../file/bloc/image_handler.dart';
+import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
+import 'package:piggram_mobile/pages/main/create_post_page/file/image_handler.dart';
 
 class FirstSignIn extends StatelessWidget {
   FirstSignIn(
