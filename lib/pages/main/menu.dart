@@ -1,27 +1,25 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/auth/bloc/auth_bloc.dart';
-import 'package:piggram_mobile/home/create_post_page/create_post_page.dart';
-import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
+import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
+import 'package:piggram_mobile/pages/main/create_post_page/create_post_page.dart';
+import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
+import 'package:piggram_mobile/pages/main/home_page/home_page.dart';
+import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
+import 'package:piggram_mobile/pages/main/profile_page/profile_page.dart';
+import 'package:piggram_mobile/pages/main/search_page/search_page.dart';
 
-import 'package:piggram_mobile/home/home_page/home_page.dart';
-import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
-import 'package:piggram_mobile/home/profile_page/profile_page.dart';
-import 'package:piggram_mobile/home/search_page/search_page.dart';
-
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
+class Menu extends StatefulWidget {
+  const Menu({Key? key}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Menu> createState() => _MenuState();
 }
 
 /// This is the private State class that goes with MyStatefulWidget.
-class _HomeState extends State<Home> {
+class _MenuState extends State<Menu> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     CreatePostPage(),

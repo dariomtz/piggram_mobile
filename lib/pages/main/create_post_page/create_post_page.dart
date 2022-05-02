@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/file/bloc/image_handler.dart';
-import 'package:piggram_mobile/home/create_post_page/bloc/post_bloc.dart';
+import 'package:piggram_mobile/pages/main/create_post_page/bloc/post_bloc.dart';
+import 'package:piggram_mobile/pages/main/create_post_page/file/image_handler.dart';
 
 class CreatePostPage extends StatelessWidget {
   CreatePostPage({Key? key}) : super(key: key);

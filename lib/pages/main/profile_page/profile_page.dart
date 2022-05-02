@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/profile.dart';
-import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
+import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);

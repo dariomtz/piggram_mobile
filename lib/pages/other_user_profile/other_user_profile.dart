@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/home/profile_page/profile_page.dart';
-import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/pages/main/profile_page/profile_page.dart';
+import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
 
 class OtherUserProfile extends StatelessWidget {
   const OtherUserProfile({Key? key}) : super(key: key);

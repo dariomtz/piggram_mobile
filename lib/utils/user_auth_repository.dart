@@ -34,12 +34,12 @@ class UserAuthRepository {
     );
     final authResult = await _auth.signInWithCredential(credential);
     User user = authResult.user!;
-    final firebaseToken = await user.getIdToken();
+    await user.getIdToken();
   }
 
   Future<String?> SignInEmailPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
+      await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       //'user-not-found' or 'wrong-password' exeptions
@@ -50,13 +50,14 @@ class UserAuthRepository {
 
   Future<String?> RegisterEmailPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
     } on FirebaseAuthException catch (e) {
       //'weak-password' or 'email-already-in-use' exeptions
       return e.code;
     } catch (e) {
       return e.toString();
     }
+    return null;
   }
 }

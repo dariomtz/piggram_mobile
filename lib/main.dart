@@ -2,18 +2,17 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/auth/bloc/auth_bloc.dart';
-import 'package:piggram_mobile/file/bloc/file_bloc.dart';
-import 'package:piggram_mobile/home/create_post_page/bloc/post_bloc.dart';
-import 'package:piggram_mobile/home/home_page/bloc/home_page_bloc.dart';
-import 'package:piggram_mobile/home/profile_page/bloc/profile_page_bloc.dart';
-import 'package:piggram_mobile/home/search_page/bloc/search_page_bloc.dart';
-import 'package:piggram_mobile/like/bloc/like_bloc.dart';
-import 'package:piggram_mobile/login/first_sign_in.dart';
-import 'package:piggram_mobile/login/login_page.dart';
-import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
-
-import 'home/home.dart';
+import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
+import 'package:piggram_mobile/pages/auth/first_sign_in.dart';
+import 'package:piggram_mobile/pages/auth/login_page.dart';
+import 'package:piggram_mobile/pages/main/create_post_page/bloc/post_bloc.dart';
+import 'package:piggram_mobile/pages/main/create_post_page/file/bloc/file_bloc.dart';
+import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
+import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
+import 'package:piggram_mobile/pages/main/menu.dart';
+import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
+import 'package:piggram_mobile/pages/main/search_page/bloc/search_page_bloc.dart';
+import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -49,7 +48,7 @@ class MyApp extends StatelessWidget {
               return LoginPage();
             }
             if (state is AuthSignedInState) {
-              return Home();
+              return Menu();
             }
             if (state is AuthFirstSignInState) {
               return FirstSignIn(
