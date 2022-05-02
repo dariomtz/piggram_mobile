@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:piggram_mobile/data/comment.dart';
+import 'package:piggram_mobile/utils/user_requests.dart';
 
 class CommentRequests {
   static final CollectionReference<CommentData> commentReq =
@@ -12,16 +13,16 @@ class CommentRequests {
           toFirestore: (comment, _) => comment.toJson());
 
   static Future<List<CommentData>> getByPostId(String id) async {
-    return _getByParamId("postId", id);
+    var commentsDoc = await commentReq.where("postId", isEqualTo: id).get();
+    var comments = commentsDoc.docs.map((e) => e.data()).toList();
+    for (var comment in comments) {
+      comment.user = (await UserRequests.findById(comment.userId)).data();
+    }
+    return comments;
   }
 
   static Future<List<CommentData>> getByUserId(String id) async {
-    return _getByParamId("userId", id);
-  }
-
-  static Future<List<CommentData>> _getByParamId(
-      String param, String id) async {
-    var commentsDoc = await commentReq.where(param, isEqualTo: id).get();
+    var commentsDoc = await commentReq.where("userId", isEqualTo: id).get();
     return commentsDoc.docs.map((e) => e.data()).toList();
   }
 
