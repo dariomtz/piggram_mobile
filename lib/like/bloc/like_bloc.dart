@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:piggram_mobile/data/like.dart';
 import 'package:piggram_mobile/utils/likes_requests.dart';
 
 part 'like_event.dart';
@@ -40,10 +41,7 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
       emit(LikeErrorState("Like doesn't exist"));
       return;
     }
-    await FirebaseFirestore.instance
-        .collection("likes")
-        .doc(like["id"])
-        .delete();
+    await FirebaseFirestore.instance.collection("likes").doc(like.id).delete();
     var likes = await LikesRequests.getByPostId(event.postId);
     emit(LikeDoneState(event.postId, likes));
   }
