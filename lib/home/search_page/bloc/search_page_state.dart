@@ -16,7 +16,7 @@ class SearchPageEmptyState extends SearchPageState {}
 class SearchPageErrorState extends SearchPageState {}
 
 class SearchPageResultState extends SearchPageState {
-  final List<Map<String, dynamic>> users;
+  final List<UserData> users;
 
   SearchPageResultState({required this.users});
 

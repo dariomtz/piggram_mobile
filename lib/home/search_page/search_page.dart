@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/data/user.dart';
+import 'package:piggram_mobile/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/other_user_profile/other_user_profile.dart';
 
 import 'bloc/search_page_bloc.dart';
 
@@ -10,18 +13,17 @@ class SearchPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(children: [
-      TextField(
-        decoration: InputDecoration(
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+          onChanged: (value) => BlocProvider.of<SearchPageBloc>(context)
+              .add(SearchPageSearchEvent(nameQuery: _nameController.text)),
+          decoration: InputDecoration(
             hintText: "Insert username",
-            prefixIcon: IconButton(
-              constraints: BoxConstraints.expand(width: 40, height: 40),
-              icon: Icon(Icons.search),
-              onPressed: () {
-                BlocProvider.of<SearchPageBloc>(context).add(
-                    SearchPageSearchEvent(nameQuery: _nameController.text));
-              },
-            )),
-        controller: _nameController,
+            prefixIcon: Icon(Icons.search),
+          ),
+          controller: _nameController,
+        ),
       ),
       BlocConsumer<SearchPageBloc, SearchPageState>(
           builder: (context, state) {
@@ -45,7 +47,7 @@ class SearchPage extends StatelessWidget {
 }
 
 class SearchResultList extends StatelessWidget {
-  final List<Map<String, dynamic>> users;
+  final List<UserData> users;
   const SearchResultList({
     Key? key,
     required this.users,
@@ -56,9 +58,7 @@ class SearchResultList extends StatelessWidget {
     return Column(
       children: users
           .map((user) => SearchResultItem(
-                username: user["username"],
-                name: user["name"],
-                imageUrl: user["image"],
+                user: user,
               ))
           .toList(),
     );
@@ -66,38 +66,41 @@ class SearchResultList extends StatelessWidget {
 }
 
 class SearchResultItem extends StatelessWidget {
-  final String username;
-  final String name;
-  final String imageUrl;
+  final UserData user;
   const SearchResultItem({
     Key? key,
-    required this.imageUrl,
-    required this.username,
-    required this.name,
+    required this.user,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.grey, width: 1)),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(backgroundImage: NetworkImage(imageUrl)),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                name,
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-              Text("@$username")
-            ],
-          )
-        ],
+    return GestureDetector(
+      onTap: () {
+        BlocProvider.of<OtherUserProfileBloc>(context)
+            .add(OtherUserProfileLoadByUsername(username: user.username));
+        Navigator.push(context,
+            MaterialPageRoute(builder: ((context) => OtherUserProfile())));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  user.displayName,
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+                Text("@${user.username}")
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
