@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/user.dart';
+import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
+import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
 import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
@@ -69,17 +71,7 @@ class Post extends StatelessWidget {
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
-          UserCard(
-            userImageURL: post.user!.photoUrl,
-            userName: post.user!.username,
-            userId: post.userId,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Image.network(post.image),
-          ),
-          Divider(),
-          Text(post.description),
+          PostHead(post: post),
           Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -117,7 +109,7 @@ class Post extends StatelessWidget {
                             },
                             child: PostActionButton(
                               icon: Icons.thumb_up,
-                              count: this.likes.length,
+                              text: '${this.likes.length}',
                               color: (this.post.liked!) ? Colors.blue : null,
                             ),
                           ),
@@ -125,15 +117,57 @@ class Post extends StatelessWidget {
                       );
                     },
                     listener: (context, state) {}),
-                PostActionButton(
-                  icon: Icons.comment,
-                  count: post.comments!,
+                GestureDetector(
+                  onTap: () {
+                    BlocProvider.of<CommentsBloc>(context)
+                        .add(CommentsLoadEvent(this.post.id!));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) =>
+                                CommentPage(post: this.post))));
+                  },
+                  child: PostActionButton(
+                    icon: Icons.comment,
+                    text: '',
+                  ),
                 ),
               ],
             ),
           )
         ],
       ),
+    );
+  }
+}
+
+class PostHead extends StatelessWidget {
+  const PostHead({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
+
+  final PostData post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        UserCard(
+          userImageURL: post.user!.photoUrl,
+          userName: post.user!.username,
+          userId: post.userId,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Center(child: Image.network(post.image)),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(post.description),
+        ),
+      ],
     );
   }
 }
@@ -160,12 +194,12 @@ class CircularIcon extends StatelessWidget {
 
 class PostActionButton extends StatelessWidget {
   final IconData icon;
-  final int count;
+  final String text;
   final Color? color;
   const PostActionButton({
     Key? key,
     required this.icon,
-    required this.count,
+    required this.text,
     this.color,
   }) : super(key: key);
 
@@ -180,7 +214,7 @@ class PostActionButton extends StatelessWidget {
             color: color,
             size: 30,
           ),
-          Text('$count')
+          Text(text)
         ],
       ),
     );
