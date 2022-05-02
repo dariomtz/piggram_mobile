@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/data/like.dart';
 import 'package:piggram_mobile/data/post.dart';
+import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
@@ -26,7 +26,10 @@ class HomePage extends StatelessWidget {
                 return Center(child: Text('Something went wrong try again'));
               }
               if (state is HomePageLoadedState) {
-                return PostList(posts: state.posts);
+                return PostList(
+                  posts: state.posts,
+                  likes: state.likes,
+                );
               }
               return Container();
             },
@@ -38,19 +41,16 @@ class HomePage extends StatelessWidget {
 
 class PostList extends StatelessWidget {
   final List<PostData> posts;
-  const PostList({
-    Key? key,
-    required this.posts,
-  }) : super(key: key);
+  final List<List<UserData>> likes;
+  const PostList({Key? key, required this.posts, required this.likes})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> posts = this
-        .posts
-        .map(
-          (post) => Post(post: post),
-        )
-        .toList();
+    List<Widget> posts = [];
+    for (var i = 0; i < this.posts.length; i++) {
+      posts.add(Post(post: this.posts[i], likes: this.likes[i]));
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: posts,
@@ -60,7 +60,8 @@ class PostList extends StatelessWidget {
 
 class Post extends StatelessWidget {
   final PostData post;
-  Post({Key? key, required this.post}) : super(key: key);
+  List<UserData> likes;
+  Post({Key? key, required this.post, required this.likes}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -89,36 +90,69 @@ class Post extends StatelessWidget {
                     builder: (context, state) {
                       if (state is LikeDoneState) {
                         if (this.post.id == state.postId) {
-                          this.post.likes = state.likes;
+                          this.likes = state.likes;
                           this.post.liked = !(this.post.liked!);
                         }
                       }
-                      return GestureDetector(
-                        onTap: () {
-                          if (this.post.liked!) {
-                            BlocProvider.of<LikeBloc>(context)
-                                .add(LikeRemoveEvent(this.post.id!));
-                          } else {
-                            BlocProvider.of<LikeBloc>(context)
-                                .add(LikeAddEvent(this.post.id!));
-                          }
-                        },
-                        child: PostActionButton(
-                          icon: Icons.thumb_up,
-                          count: this.post.likes!.length,
-                          color: (this.post.liked!) ? Colors.blue : null,
-                        ),
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.6,
+                              height: 50,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: this.likes.length,
+                                  itemBuilder: (context, ind) =>
+                                      CircularIcon(user: likes[ind]))),
+                          GestureDetector(
+                            onTap: () {
+                              if (this.post.liked!) {
+                                BlocProvider.of<LikeBloc>(context)
+                                    .add(LikeRemoveEvent(this.post.id!));
+                              } else {
+                                BlocProvider.of<LikeBloc>(context)
+                                    .add(LikeAddEvent(this.post.id!));
+                              }
+                            },
+                            child: PostActionButton(
+                              icon: Icons.thumb_up,
+                              count: this.likes.length,
+                              color: (this.post.liked!) ? Colors.blue : null,
+                            ),
+                          ),
+                        ],
                       );
                     },
                     listener: (context, state) {}),
                 PostActionButton(
                   icon: Icons.comment,
-                  count: post.comments!.length,
+                  count: post.comments!,
                 ),
               ],
             ),
           )
         ],
+      ),
+    );
+  }
+}
+
+class CircularIcon extends StatelessWidget {
+  const CircularIcon({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+
+  final UserData user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: CircleAvatar(
+        radius: 20,
+        backgroundImage: NetworkImage(this.user.photoUrl),
       ),
     );
   }
