@@ -13,6 +13,7 @@ class FileBloc extends Bloc<FileEvent, FileState> {
   FileBloc() : super(FileInitial()) {
     on<FileGetImageEvent>(_getImage);
     on<FileUploadImageEvent>(_upload);
+    on<FileCleanEvent>(_clean);
   }
 
   FutureOr<void> _getImage(
@@ -43,5 +44,9 @@ class FileBloc extends Bloc<FileEvent, FileState> {
       emit(FileErrorState());
       emit(FileInitial());
     }
+  }
+
+  FutureOr<void> _clean(FileCleanEvent event, Emitter<FileState> emit) {
+    emit(FileInitial());
   }
 }

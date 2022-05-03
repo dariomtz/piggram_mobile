@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/pages/follows/bloc/follows_bloc.dart';
-import 'package:piggram_mobile/pages/main/home_page/home_page.dart';
 import 'package:piggram_mobile/pages/main/search_page/search_page.dart';
 
 class FollowsPage extends StatefulWidget {

@@ -16,7 +16,7 @@ class CommentData {
 
   CommentData.fromJson(Map<String, Object?> json)
       : this(
-            id: json["id"] as String,
+            id: json["id"] != null ? json["id"] as String : '',
             description: json["description"] as String,
             postId: json["postId"] as String,
             publishedAt: (json["publishedAt"] as Timestamp).toDate(),

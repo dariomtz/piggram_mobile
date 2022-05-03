@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:piggram_mobile/data/follow.dart';
 import 'package:piggram_mobile/utils/user_auth_repository.dart';
 

@@ -6,6 +6,7 @@ import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
 import 'package:piggram_mobile/pages/auth/first_sign_in.dart';
 import 'package:piggram_mobile/pages/auth/login_page.dart';
 import 'package:piggram_mobile/pages/follows/bloc/follows_bloc.dart';
+import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/pages/main/create_post_page/bloc/post_bloc.dart';
 import 'package:piggram_mobile/pages/main/create_post_page/file/bloc/file_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
@@ -32,6 +33,7 @@ void main() async {
     BlocProvider(create: (context) => OtherUserProfileBloc()),
     BlocProvider(create: (context) => LikeBloc()),
     BlocProvider(create: (context) => FollowsBloc()),
+    BlocProvider(create: (context) => CommentsBloc()),
   ], child: const MyApp()));
 }
 

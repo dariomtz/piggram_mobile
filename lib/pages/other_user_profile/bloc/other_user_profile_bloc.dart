@@ -1,11 +1,8 @@
-import 'dart:ffi';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:piggram_mobile/data/profile.dart';
 import 'package:piggram_mobile/data/user.dart';
-import 'package:piggram_mobile/pages/main/profile_page/profile_page.dart';
 import 'package:piggram_mobile/utils/follow_requests.dart';
 import 'package:piggram_mobile/utils/user_requests.dart';
 

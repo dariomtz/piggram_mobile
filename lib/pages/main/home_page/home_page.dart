@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/data/like.dart';
 import 'package:piggram_mobile/data/post.dart';
+import 'package:piggram_mobile/data/user.dart';
+import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
+import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
 import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
@@ -26,7 +28,10 @@ class HomePage extends StatelessWidget {
                 return Center(child: Text('Something went wrong try again'));
               }
               if (state is HomePageLoadedState) {
-                return PostList(posts: state.posts);
+                return PostList(
+                  posts: state.posts,
+                  likes: state.likes,
+                );
               }
               return Container();
             },
@@ -38,19 +43,16 @@ class HomePage extends StatelessWidget {
 
 class PostList extends StatelessWidget {
   final List<PostData> posts;
-  const PostList({
-    Key? key,
-    required this.posts,
-  }) : super(key: key);
+  final List<List<UserData>> likes;
+  const PostList({Key? key, required this.posts, required this.likes})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> posts = this
-        .posts
-        .map(
-          (post) => Post(post: post),
-        )
-        .toList();
+    List<Widget> posts = [];
+    for (var i = 0; i < this.posts.length; i++) {
+      posts.add(Post(post: this.posts[i], likes: this.likes[i]));
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: posts,
@@ -58,63 +60,95 @@ class PostList extends StatelessWidget {
   }
 }
 
-class Post extends StatelessWidget {
+class Post extends StatefulWidget {
   final PostData post;
-  Post({Key? key, required this.post}) : super(key: key);
+  List<UserData> likes;
+  final bool showComment;
+  Post(
+      {Key? key,
+      required this.post,
+      required this.likes,
+      this.showComment = true})
+      : super(key: key);
 
+  @override
+  State<Post> createState() => _PostState();
+}
+
+class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
-          UserCard(
-            userImageURL: post.user!.photoUrl,
-            userName: post.user!.username,
-            userId: post.userId,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Image.network(post.image),
-          ),
-          Divider(),
-          Text(post.description),
+          PostHead(post: widget.post),
           Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                BlocConsumer<LikeBloc, LikeState>(
-                    builder: (context, state) {
-                      if (state is LikeDoneState) {
-                        if (this.post.id == state.postId) {
-                          this.post.likes = state.likes;
-                          this.post.liked = !(this.post.liked!);
-                        }
+                BlocBuilder<LikeBloc, LikeState>(
+                  builder: (context, state) {
+                    if (state is LikeDoneState) {
+                      if (this.widget.post.id == state.postId) {
+                        this.widget.likes = state.likes;
+                        this.widget.post.liked = state.liked;
                       }
-                      return GestureDetector(
+                    }
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            height: 50,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: this.widget.likes.length,
+                                itemBuilder: (context, ind) =>
+                                    CircularIcon(user: widget.likes[ind]))),
+                        GestureDetector(
+                          onTap: () {
+                            if (this.widget.post.liked!) {
+                              BlocProvider.of<LikeBloc>(context)
+                                  .add(LikeRemoveEvent(this.widget.post.id!));
+                            } else {
+                              BlocProvider.of<LikeBloc>(context)
+                                  .add(LikeAddEvent(this.widget.post.id!));
+                            }
+                          },
+                          child: PostActionButton(
+                            icon: Icons.thumb_up,
+                            text: '${this.widget.likes.length}',
+                            color:
+                                (this.widget.post.liked!) ? Colors.blue : null,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                this.widget.showComment
+                    ? GestureDetector(
                         onTap: () {
-                          if (this.post.liked!) {
-                            BlocProvider.of<LikeBloc>(context)
-                                .add(LikeRemoveEvent(this.post.id!));
-                          } else {
-                            BlocProvider.of<LikeBloc>(context)
-                                .add(LikeAddEvent(this.post.id!));
-                          }
+                          BlocProvider.of<CommentsBloc>(context)
+                              .add(CommentsLoadEvent(this.widget.post.id!));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: ((context) => CommentPage(
+                                  post: this.widget.post,
+                                  likes: this.widget.likes)),
+                            ),
+                          );
                         },
                         child: PostActionButton(
-                          icon: Icons.thumb_up,
-                          count: this.post.likes!.length,
-                          color: (this.post.liked!) ? Colors.blue : null,
+                          icon: Icons.comment,
+                          text: '',
                         ),
-                      );
-                    },
-                    listener: (context, state) {}),
-                PostActionButton(
-                  icon: Icons.comment,
-                  count: post.comments!.length,
-                ),
+                      )
+                    : Container(),
               ],
             ),
           )
@@ -124,14 +158,65 @@ class Post extends StatelessWidget {
   }
 }
 
+class PostHead extends StatelessWidget {
+  const PostHead({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
+
+  final PostData post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        UserCard(
+          userImageURL: post.user!.photoUrl,
+          userName: post.user!.username,
+          userId: post.userId,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Center(child: Image.network(post.image)),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(post.description),
+        ),
+      ],
+    );
+  }
+}
+
+class CircularIcon extends StatelessWidget {
+  const CircularIcon({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
+
+  final UserData user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: CircleAvatar(
+        radius: 20,
+        backgroundImage: NetworkImage(this.user.photoUrl),
+      ),
+    );
+  }
+}
+
 class PostActionButton extends StatelessWidget {
   final IconData icon;
-  final int count;
+  final String text;
   final Color? color;
   const PostActionButton({
     Key? key,
     required this.icon,
-    required this.count,
+    required this.text,
     this.color,
   }) : super(key: key);
 
@@ -146,7 +231,7 @@ class PostActionButton extends StatelessWidget {
             color: color,
             size: 30,
           ),
-          Text('$count')
+          Text(text)
         ],
       ),
     );
