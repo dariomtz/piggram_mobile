@@ -2,12 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/post.dart';
+import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/home_page.dart';
 
 class CommentPage extends StatefulWidget {
   final PostData post;
-  CommentPage({Key? key, required this.post}) : super(key: key);
+  List<UserData> likes;
+  CommentPage({Key? key, required this.post, required this.likes})
+      : super(key: key);
   final TextEditingController _commentController = TextEditingController();
   @override
   State<CommentPage> createState() => _CommentPageState();
@@ -25,15 +28,30 @@ class _CommentPageState extends State<CommentPage> {
           if (state is CommentsLoadingState) {
             return ListView(
               children: [
-                Card(child: PostHead(post: this.widget.post)),
-                Center(child: CircularProgressIndicator())
+                Card(
+                  child: Post(
+                    post: this.widget.post,
+                    likes: widget.likes,
+                    showComment: false,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Center(child: CircularProgressIndicator()),
+                )
               ],
             );
           }
           if (state is CommentsLoadedState) {
             return ListView(
               children: [
-                Card(child: PostHead(post: this.widget.post)),
+                Card(
+                  child: Post(
+                    post: this.widget.post,
+                    likes: widget.likes,
+                    showComment: false,
+                  ),
+                ),
                 ...state.comments.map(
                   (comment) => Card(
                     child: Column(

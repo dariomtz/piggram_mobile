@@ -60,18 +60,29 @@ class PostList extends StatelessWidget {
   }
 }
 
-class Post extends StatelessWidget {
+class Post extends StatefulWidget {
   final PostData post;
   List<UserData> likes;
-  Post({Key? key, required this.post, required this.likes}) : super(key: key);
+  final bool showComment;
+  Post(
+      {Key? key,
+      required this.post,
+      required this.likes,
+      this.showComment = true})
+      : super(key: key);
 
+  @override
+  State<Post> createState() => _PostState();
+}
+
+class _PostState extends State<Post> {
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
-          PostHead(post: post),
+          PostHead(post: widget.post),
           Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -81,9 +92,9 @@ class Post extends StatelessWidget {
                 BlocConsumer<LikeBloc, LikeState>(
                     builder: (context, state) {
                       if (state is LikeDoneState) {
-                        if (this.post.id == state.postId) {
-                          this.likes = state.likes;
-                          this.post.liked = !(this.post.liked!);
+                        if (this.widget.post.id == state.postId) {
+                          this.widget.likes = state.likes;
+                          this.widget.post.liked = state.liked;
                         }
                       }
                       return Row(
@@ -94,44 +105,51 @@ class Post extends StatelessWidget {
                               height: 50,
                               child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: this.likes.length,
+                                  itemCount: this.widget.likes.length,
                                   itemBuilder: (context, ind) =>
-                                      CircularIcon(user: likes[ind]))),
+                                      CircularIcon(user: widget.likes[ind]))),
                           GestureDetector(
                             onTap: () {
-                              if (this.post.liked!) {
+                              if (this.widget.post.liked!) {
                                 BlocProvider.of<LikeBloc>(context)
-                                    .add(LikeRemoveEvent(this.post.id!));
+                                    .add(LikeRemoveEvent(this.widget.post.id!));
                               } else {
                                 BlocProvider.of<LikeBloc>(context)
-                                    .add(LikeAddEvent(this.post.id!));
+                                    .add(LikeAddEvent(this.widget.post.id!));
                               }
                             },
                             child: PostActionButton(
                               icon: Icons.thumb_up,
-                              text: '${this.likes.length}',
-                              color: (this.post.liked!) ? Colors.blue : null,
+                              text: '${this.widget.likes.length}',
+                              color: (this.widget.post.liked!)
+                                  ? Colors.blue
+                                  : null,
                             ),
                           ),
                         ],
                       );
                     },
                     listener: (context, state) {}),
-                GestureDetector(
-                  onTap: () {
-                    BlocProvider.of<CommentsBloc>(context)
-                        .add(CommentsLoadEvent(this.post.id!));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: ((context) =>
-                                CommentPage(post: this.post))));
-                  },
-                  child: PostActionButton(
-                    icon: Icons.comment,
-                    text: '',
-                  ),
-                ),
+                this.widget.showComment
+                    ? GestureDetector(
+                        onTap: () {
+                          BlocProvider.of<CommentsBloc>(context)
+                              .add(CommentsLoadEvent(this.widget.post.id!));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: ((context) => CommentPage(
+                                  post: this.widget.post,
+                                  likes: this.widget.likes)),
+                            ),
+                          );
+                        },
+                        child: PostActionButton(
+                          icon: Icons.comment,
+                          text: '',
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           )
