@@ -22,20 +22,19 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
     emit(LikeInitial());
     var userId = FirebaseAuth.instance.currentUser!.uid;
     var like = await LikesRequests.find(event.postId, userId);
-    if (like != null) {
-      emit(LikeErrorState("Like already exist"));
-      return;
+    if (like == null) {
+      await FirebaseFirestore.instance
+          .collection("likes")
+          .add({"postId": event.postId, "userId": userId});
     }
-    await FirebaseFirestore.instance
-        .collection("likes")
-        .add({"postId": event.postId, "userId": userId});
 
     var likes = await LikesRequests.getByPostId(event.postId);
     List<UserData> users = [];
     for (var like in likes) {
       users.add((await UserRequests.findById(like.userId)).data()!);
     }
-    emit(LikeDoneState(event.postId, users));
+    emit(LikeDoneState(postId: event.postId, likes: users, liked: true));
+    //emit(LikeInitial());
   }
 
   FutureOr<void> _onRemove(
@@ -43,16 +42,19 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
     emit(LikeInitial());
     var userId = FirebaseAuth.instance.currentUser!.uid;
     var like = await LikesRequests.find(event.postId, userId);
-    if (like == null) {
-      emit(LikeErrorState("Like doesn't exist"));
-      return;
+    if (like != null) {
+      await FirebaseFirestore.instance
+          .collection("likes")
+          .doc(like.id)
+          .delete();
     }
-    await FirebaseFirestore.instance.collection("likes").doc(like.id).delete();
+
     var likes = await LikesRequests.getByPostId(event.postId);
     List<UserData> users = [];
     for (var like in likes) {
       users.add((await UserRequests.findById(like.userId)).data()!);
     }
-    emit(LikeDoneState(event.postId, users));
+    emit(LikeDoneState(postId: event.postId, likes: users, liked: false));
+    //emit(LikeInitial());
   }
 }
