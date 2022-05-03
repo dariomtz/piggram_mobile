@@ -8,8 +8,8 @@ class FollowData {
 
   FollowData.fromJson(Map<String, Object?> json)
       : this(
-          followee: json["followeeId"]! as String,
-          follower: json["followerId"]! as String,
+          followee: json["followeeID"]! as String,
+          follower: json["followerID"]! as String,
         );
 
   Map<String, Object?> toJson() {

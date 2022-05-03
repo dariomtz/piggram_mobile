@@ -22,3 +22,12 @@ class OtherUserProfileLoadByUsername extends OtherUserProfileEvent {
   @override
   List<Object> get props => [username];
 }
+
+class OtherUserProfileFollow extends OtherUserProfileEvent {
+  final bool follow;
+  final ProfileData profile;
+  const OtherUserProfileFollow({required this.profile, required this.follow});
+
+  @override
+  List<Object> get props => [profile, follow];
+}

@@ -1,8 +1,12 @@
+import 'dart:ffi';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:piggram_mobile/data/profile.dart';
 import 'package:piggram_mobile/data/user.dart';
+import 'package:piggram_mobile/pages/main/profile_page/profile_page.dart';
+import 'package:piggram_mobile/utils/follow_requests.dart';
 import 'package:piggram_mobile/utils/user_requests.dart';
 
 part 'other_user_profile_event.dart';
@@ -13,14 +17,15 @@ class OtherUserProfileBloc
   OtherUserProfileBloc() : super(OtherUserProfileInitial()) {
     on<OtherUserProfileLoad>(loadProfile);
     on<OtherUserProfileLoadByUsername>(loadProfileByUsername);
+    on<OtherUserProfileFollow>(follow);
   }
 
   Future<void> loadProfile(OtherUserProfileLoad event, emit) async {
     emit(OtherUserProfileLoading());
     try {
       ProfileData data = await UserRequests.getProfile(event.userId);
-
-      emit(OtherUserProfileLoaded(profileData: data));
+      bool follow = await FollowRequests.amIFollowing(event.userId);
+      emit(OtherUserProfileLoaded(profileData: data, follow: follow));
     } catch (e) {
       print(e);
       emit(OtherUserProfileError());
@@ -33,10 +38,22 @@ class OtherUserProfileBloc
     try {
       QuerySnapshot<UserData> doc =
           await UserRequests.findByUsername(event.username);
-      ProfileData data =
-          await UserRequests.getProfile(doc.docs[0].reference.id);
+      String id = doc.docs[0].reference.id;
+      ProfileData data = await UserRequests.getProfile(id);
+      bool follow = await FollowRequests.amIFollowing(id);
+      emit(OtherUserProfileLoaded(profileData: data, follow: follow));
+    } catch (e) {
+      print(e);
+      emit(OtherUserProfileError());
+    }
+  }
 
-      emit(OtherUserProfileLoaded(profileData: data));
+  Future<void> follow(OtherUserProfileFollow event, emit) async {
+    emit(OtherUserProfileLoadingFollow(profileData: event.profile));
+    try {
+      await FollowRequests.follow(event.profile.id, event.follow);
+      emit(OtherUserProfileLoaded(
+          profileData: event.profile, follow: event.follow));
     } catch (e) {
       print(e);
       emit(OtherUserProfileError());

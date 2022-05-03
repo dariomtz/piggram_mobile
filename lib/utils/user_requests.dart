@@ -64,7 +64,11 @@ class UserRequests {
     var _posts = postsDoc.docs.map((post) => post.data()).toList();
 
     return ProfileData(
-        user: _user, posts: _posts, followers: followers, following: following);
+        user: _user,
+        posts: _posts,
+        followers: followers,
+        following: following,
+        id: id);
   };
 
   static final searchUser = (String query) async {
@@ -89,5 +93,16 @@ class UserRequests {
       }
     });
     return _users;
+  };
+
+  static final loadUsers = (List<String> users) async {
+    List<UserData> list = [];
+    if (users.isEmpty) {
+      return list;
+    }
+    return (await usersRef.where(FieldPath.documentId, whereIn: users).get())
+        .docs
+        .map((user) => user.data())
+        .toList();
   };
 }

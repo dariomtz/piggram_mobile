@@ -4,7 +4,11 @@ import 'package:google_sign_in/google_sign_in.dart';
 class UserAuthRepository {
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ["email"]);
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseAuth authRef = FirebaseAuth.instance;
 
+  static final currentUserId = () {
+    return authRef.currentUser!.uid;
+  };
   //true ->go home page
   //false -> go login page
   bool isAuthenticated() {
