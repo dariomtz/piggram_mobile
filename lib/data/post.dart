@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:piggram_mobile/data/comment.dart';
-import 'package:piggram_mobile/data/like.dart';
 import 'package:piggram_mobile/data/user.dart';
 
 class PostData {

@@ -89,47 +89,46 @@ class _PostState extends State<Post> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                BlocConsumer<LikeBloc, LikeState>(
-                    builder: (context, state) {
-                      if (state is LikeDoneState) {
-                        if (this.widget.post.id == state.postId) {
-                          this.widget.likes = state.likes;
-                          this.widget.post.liked = state.liked;
-                        }
+                BlocBuilder<LikeBloc, LikeState>(
+                  builder: (context, state) {
+                    if (state is LikeDoneState) {
+                      if (this.widget.post.id == state.postId) {
+                        this.widget.likes = state.likes;
+                        this.widget.post.liked = state.liked;
                       }
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              height: 50,
-                              child: ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: this.widget.likes.length,
-                                  itemBuilder: (context, ind) =>
-                                      CircularIcon(user: widget.likes[ind]))),
-                          GestureDetector(
-                            onTap: () {
-                              if (this.widget.post.liked!) {
-                                BlocProvider.of<LikeBloc>(context)
-                                    .add(LikeRemoveEvent(this.widget.post.id!));
-                              } else {
-                                BlocProvider.of<LikeBloc>(context)
-                                    .add(LikeAddEvent(this.widget.post.id!));
-                              }
-                            },
-                            child: PostActionButton(
-                              icon: Icons.thumb_up,
-                              text: '${this.widget.likes.length}',
-                              color: (this.widget.post.liked!)
-                                  ? Colors.blue
-                                  : null,
-                            ),
+                    }
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            height: 50,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: this.widget.likes.length,
+                                itemBuilder: (context, ind) =>
+                                    CircularIcon(user: widget.likes[ind]))),
+                        GestureDetector(
+                          onTap: () {
+                            if (this.widget.post.liked!) {
+                              BlocProvider.of<LikeBloc>(context)
+                                  .add(LikeRemoveEvent(this.widget.post.id!));
+                            } else {
+                              BlocProvider.of<LikeBloc>(context)
+                                  .add(LikeAddEvent(this.widget.post.id!));
+                            }
+                          },
+                          child: PostActionButton(
+                            icon: Icons.thumb_up,
+                            text: '${this.widget.likes.length}',
+                            color:
+                                (this.widget.post.liked!) ? Colors.blue : null,
                           ),
-                        ],
-                      );
-                    },
-                    listener: (context, state) {}),
+                        ),
+                      ],
+                    );
+                  },
+                ),
                 this.widget.showComment
                     ? GestureDetector(
                         onTap: () {

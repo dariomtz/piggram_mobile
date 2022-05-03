@@ -13,7 +13,17 @@ class OtherUserProfileLoading extends OtherUserProfileState {}
 
 class OtherUserProfileLoaded extends OtherUserProfileState {
   final ProfileData profileData;
-  const OtherUserProfileLoaded({required this.profileData});
+  final bool follow;
+  const OtherUserProfileLoaded(
+      {required this.profileData, required this.follow});
+
+  @override
+  List<Object> get props => [profileData, follow];
+}
+
+class OtherUserProfileLoadingFollow extends OtherUserProfileState {
+  final ProfileData profileData;
+  const OtherUserProfileLoadingFollow({required this.profileData});
 
   @override
   List<Object> get props => [profileData];

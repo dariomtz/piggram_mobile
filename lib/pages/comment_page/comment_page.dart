@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/post.dart';
@@ -8,7 +7,7 @@ import 'package:piggram_mobile/pages/main/home_page/home_page.dart';
 
 class CommentPage extends StatefulWidget {
   final PostData post;
-  List<UserData> likes;
+  final List<UserData> likes;
   CommentPage({Key? key, required this.post, required this.likes})
       : super(key: key);
   final TextEditingController _commentController = TextEditingController();

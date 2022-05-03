@@ -57,7 +57,7 @@ class SearchResultList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: users
-          .map((user) => SearchResultItem(
+          .map((user) => UserCardItem(
                 user: user,
               ))
           .toList(),
@@ -65,9 +65,9 @@ class SearchResultList extends StatelessWidget {
   }
 }
 
-class SearchResultItem extends StatelessWidget {
+class UserCardItem extends StatelessWidget {
   final UserData user;
-  const SearchResultItem({
+  const UserCardItem({
     Key? key,
     required this.user,
   }) : super(key: key);

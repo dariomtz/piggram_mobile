@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:piggram_mobile/data/like.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/utils/likes_requests.dart';
 import 'package:piggram_mobile/utils/user_requests.dart';

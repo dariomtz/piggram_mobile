@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/profile.dart';
+import 'package:piggram_mobile/pages/follows/bloc/follows_bloc.dart';
+import 'package:piggram_mobile/pages/follows/follows_page.dart';
 import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -15,6 +17,7 @@ class ProfilePage extends StatelessWidget {
         }
         if (state is ProfilePageLoadedState) {
           return Profile(
+            actions: [],
             profileData: state.profileData,
           );
         }
@@ -32,10 +35,12 @@ class ProfilePage extends StatelessWidget {
 }
 
 class Profile extends StatelessWidget {
+  final List<Widget> actions;
   final ProfileData profileData;
   const Profile({
     Key? key,
     required this.profileData,
+    required this.actions,
   }) : super(key: key);
 
   @override
@@ -55,13 +60,40 @@ class Profile extends StatelessWidget {
               num: profileData.posts.length,
               name: 'Posts',
             ),
-            ProfileStat(
-              num: profileData.followers,
-              name: 'Followers',
+            GestureDetector(
+              onTap: () {
+                BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
+                    followers: profileData.followers,
+                    following: profileData.following));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) => FollowsPage(
+                              username: profileData.user.username,
+                              showFollowers: true,
+                            ))));
+              },
+              child: ProfileStat(
+                num: profileData.followers.length,
+                name: 'Followers',
+              ),
             ),
-            ProfileStat(
-              num: profileData.following,
-              name: 'Following',
+            GestureDetector(
+              onTap: () {
+                BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
+                    followers: profileData.followers,
+                    following: profileData.following));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) => FollowsPage(
+                            username: profileData.user.username,
+                            showFollowers: false))));
+              },
+              child: ProfileStat(
+                num: profileData.following.length,
+                name: 'Following',
+              ),
             ),
           ]),
         ),
@@ -81,6 +113,15 @@ class Profile extends StatelessWidget {
               Text(profileData.user.description),
             ],
           ),
+        ),
+        Row(
+          children: actions
+              .map((w) => Expanded(
+                      child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: w,
+                  )))
+              .toList(),
         ),
         //TODO: Add indicator when no posts
         PictureMiniatureList(

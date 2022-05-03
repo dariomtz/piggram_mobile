@@ -12,18 +12,32 @@ class OtherUserProfile extends StatelessWidget {
       appBar: AppBar(),
       body: BlocBuilder<OtherUserProfileBloc, OtherUserProfileState>(
         builder: (context, state) {
-          if (state is OtherUserProfileError) {
-            return Text('Something went wrong');
-          }
-
           if (state is OtherUserProfileLoading) {
             return Center(child: CircularProgressIndicator());
           }
 
-          if (state is OtherUserProfileLoaded) {
-            return Profile(profileData: state.profileData);
+          if (state is OtherUserProfileLoadingFollow) {
+            return Profile(
+                actions: [Center(child: CircularProgressIndicator())],
+                profileData: state.profileData);
+          } else if (state is OtherUserProfileLoaded) {
+            return Profile(actions: [
+              state.follow
+                  ? OutlinedButton(
+                      onPressed: (() =>
+                          BlocProvider.of<OtherUserProfileBloc>(context).add(
+                              OtherUserProfileFollow(
+                                  profile: state.profileData, follow: false))),
+                      child: Text("Unfollow"))
+                  : ElevatedButton(
+                      onPressed: (() =>
+                          BlocProvider.of<OtherUserProfileBloc>(context).add(
+                              OtherUserProfileFollow(
+                                  profile: state.profileData, follow: true))),
+                      child: Text("Follow"))
+            ], profileData: state.profileData);
           }
-          return Text('hello');
+          return Text('Something went wrong');
         },
       ),
     );
