@@ -65,7 +65,8 @@ class MyApp extends StatelessWidget {
         home: BlocConsumer<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthUnsignedInState ||
-                state is AuthFirebaseErrorState) {
+                state is AuthFirebaseErrorState ||
+                state is AuthErrorState) {
               return LoginPage();
             }
             if (state is AuthSignedInState) {

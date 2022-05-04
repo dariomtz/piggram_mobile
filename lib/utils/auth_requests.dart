@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRequests {
@@ -29,8 +30,19 @@ class AuthRequests {
 
   Future<void> signInGoogle() async {
     //Google Sign In
-    final googleUser = await _googleSignIn.signIn();
-    final googleAuth = await googleUser!.authentication;
+    GoogleSignInAccount? googleUser;
+    try {
+      googleUser = await _googleSignIn.signIn();
+    } on PlatformException catch (err) {
+      googleUser = null;
+    } catch (err) {
+      googleUser = null;
+    }
+
+    if (googleUser == null) {
+      return Future.error("Cancelled SignIn");
+    }
+    final googleAuth = await googleUser.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,

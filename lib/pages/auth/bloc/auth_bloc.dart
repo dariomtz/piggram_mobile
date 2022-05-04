@@ -25,7 +25,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> _signInEmail(
       AuthSignInEmailEvent event, Emitter<AuthState> emit) async {
-    var res = await _userAuth.SignInEmailPassword(event.email, event.password);
+    var res;
+    try {
+      res = await _userAuth.SignInEmailPassword(event.email, event.password);
+    } catch (err) {
+      emit(AuthErrorState(err.toString()));
+    }
+
     if (res != null) {
       emit(AuthFirebaseErrorState(res));
       return;
@@ -60,8 +66,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> _registerEmail(
       AuthRegisterEmailEvent event, Emitter<AuthState> emit) async {
-    var res =
-        await _userAuth.RegisterEmailPassword(event.email, event.password);
+    var res;
+    try {
+      res = await _userAuth.RegisterEmailPassword(event.email, event.password);
+    } catch (err) {
+      emit(AuthErrorState(err.toString()));
+    }
     if (res == 'weak-password' || res == 'email-already-in-use') {
       emit(AuthFirebaseErrorState(res!));
       return;
@@ -77,15 +87,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> _signInGoogle(
       AuthSignInGoogleEvent event, Emitter<AuthState> emit) async {
-    await _userAuth.signInGoogle();
-    //After SignIn find if current acoount contains an entry in the database
-    if (await UserRequests.isRegistered(
-        FirebaseAuth.instance.currentUser!.uid)) {
-      emit(AuthSignedInState());
-    } else {
-      emit(AuthFirstSignInState(
-          description: "Hey, I'm using PigGram",
-          name: FirebaseAuth.instance.currentUser?.displayName));
+    try {
+      await _userAuth.signInGoogle().catchError((err) {
+        emit(AuthUnsignedInState());
+      });
+      //After SignIn find if current acoount contains an entry in the database
+      if (await UserRequests.isRegistered(
+          FirebaseAuth.instance.currentUser!.uid)) {
+        emit(AuthSignedInState());
+      } else {
+        emit(AuthFirstSignInState(
+            description: "Hey, I'm using PigGram",
+            name: FirebaseAuth.instance.currentUser?.displayName));
+      }
+    } catch (err) {
+      emit(AuthErrorState(err.toString()));
     }
   }
 
