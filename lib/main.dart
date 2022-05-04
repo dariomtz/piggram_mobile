@@ -47,6 +47,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'PigGram',
+        theme: ThemeData(
+          brightness: Brightness.light,
+          primaryColor: Colors.red,
+          primarySwatch: Colors.red,
+          appBarTheme: AppBarTheme(
+            color: Colors.white,
+            titleTextStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
+            actionsIconTheme: IconThemeData(color: Colors.black),
+          ),
+          scaffoldBackgroundColor: Colors.white,
+        ),
         home: BlocConsumer<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthUnsignedInState ||

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/profile.dart';
+import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
 import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
 import 'package:piggram_mobile/pages/follows/bloc/follows_bloc.dart';
@@ -17,11 +18,18 @@ class ProfilePage extends StatelessWidget {
     return BlocBuilder<ProfilePageBloc, ProfilePageState>(
       builder: (context, state) {
         if (state is ProfilePageLoadingState) {
-          return CircularProgressIndicator();
+          return Center(child: CircularProgressIndicator());
         }
         if (state is ProfilePageLoadedState) {
           return Profile(
-            actions: [],
+            actions: [
+              ElevatedButton.icon(
+                onPressed: () =>
+                    BlocProvider.of<AuthBloc>(context).add(AuthSignOutEvent()),
+                label: Text("Sign out"),
+                icon: Icon(Icons.logout),
+              )
+            ],
             profileData: state.profileData,
           );
         }
@@ -53,79 +61,76 @@ class Profile extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.all(6.0),
-          child: Card(
-            child: Column(
-              children: [
-                Row(children: [
-                  Padding(
-                      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundImage:
-                            NetworkImage(profileData.user.photoUrl),
-                      )),
-                  ProfileStat(
-                    num: profileData.posts.length,
-                    name: 'Posts',
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
-                          followers: profileData.followers,
-                          following: profileData.following));
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => FollowsPage(
-                                    username: profileData.user.username,
-                                    showFollowers: true,
-                                  ))));
-                    },
-                    child: ProfileStat(
-                      num: profileData.followers.length,
-                      name: 'Followers',
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
-                          followers: profileData.followers,
-                          following: profileData.following));
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: ((context) => FollowsPage(
-                                  username: profileData.user.username,
-                                  showFollowers: false))));
-                    },
-                    child: ProfileStat(
-                      num: profileData.following.length,
-                      name: 'Following',
-                    ),
-                  ),
-                ]),
+          child: Column(
+            children: [
+              Row(children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.only(left: 6.0, right: 6.0, bottom: 6),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        profileData.user.displayName,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      Text(
-                        '@' + profileData.user.username,
-                        style: TextStyle(
-                            fontStyle: FontStyle.italic, fontSize: 15),
-                      ),
-                      Text(profileData.user.description),
-                    ],
+                    padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundImage: NetworkImage(profileData.user.photoUrl),
+                    )),
+                ProfileStat(
+                  num: profileData.posts.length,
+                  name: 'Posts',
+                ),
+                GestureDetector(
+                  onTap: () {
+                    BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
+                        followers: profileData.followers,
+                        following: profileData.following));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => FollowsPage(
+                                  username: profileData.user.username,
+                                  showFollowers: true,
+                                ))));
+                  },
+                  child: ProfileStat(
+                    num: profileData.followers.length,
+                    name: 'Followers',
                   ),
                 ),
-              ],
-            ),
+                GestureDetector(
+                  onTap: () {
+                    BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
+                        followers: profileData.followers,
+                        following: profileData.following));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => FollowsPage(
+                                username: profileData.user.username,
+                                showFollowers: false))));
+                  },
+                  child: ProfileStat(
+                    num: profileData.following.length,
+                    name: 'Following',
+                  ),
+                ),
+              ]),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 6.0, right: 6.0, bottom: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      profileData.user.displayName,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    Text(
+                      '@' + profileData.user.username,
+                      style:
+                          TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
+                    ),
+                    Text(profileData.user.description),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
         Row(
@@ -154,35 +159,29 @@ class PictureMiniatureList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (posts.isEmpty) {
+      return Center(
+        child: Text("There are no post to show"),
+      );
+    }
+
     List<Widget> column = [];
     List<Widget> row = [];
     for (var i = 0; i < posts.length; i++) {
-      if (i % 3 == 0) {
-        if (row.isNotEmpty) {
-          column.add(
-            Row(
-              children: row,
-            ),
-          );
-        }
+      row.add(PictureMiniature(post: posts[i]));
+      if (i % 3 == 2 || i == posts.length - 1) {
+        column.add(
+          Row(
+            children: row,
+          ),
+        );
         row = [];
       }
-      row.add(PictureMiniature(post: posts[i]));
     }
-    if (row.isNotEmpty) {
-      column.add(
-        Row(
-          children: row,
-        ),
-      );
-    }
-    return column.length != 0
-        ? Column(
-            children: column,
-          )
-        : Center(
-            child: Text("There are no post to show"),
-          );
+
+    return Column(
+      children: column,
+    );
   }
 }
 

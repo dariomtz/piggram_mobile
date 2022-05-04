@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
 import 'package:piggram_mobile/pages/main/create_post_page/create_post_page.dart';
 import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/home_page.dart';
@@ -37,6 +36,12 @@ class _MenuState extends State<Menu> {
           .add(ProfilePageGetProfileEvent());
     }
   ];
+  static List<String> appbarTitles = [
+    'FoodShare',
+    'New post',
+    'Search',
+    'My profile',
+  ];
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -48,32 +53,10 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PigGram'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              BlocProvider.of<AuthBloc>(context).add(AuthSignOutEvent());
-            },
-          ),
-        ],
+        elevation: 0,
+        title: Text(appbarTitles.elementAt(_selectedIndex)),
       ),
-      body: Stack(
-        children: [
-          FractionallySizedBox(
-            widthFactor: 1,
-            heightFactor: 1,
-            child: Image.network(
-              //Photo by Eva Elijas: https://www.pexels.com/photo/pattern-texture-abstract-design-7605100/
-              "https://images.pexels.com/photos/7605100/pexels-photo-7605100.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
-              fit: BoxFit.cover,
-            ),
-          ),
-          Center(
-            child: _widgetOptions.elementAt(_selectedIndex),
-          ),
-        ],
-      ),
+      body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
@@ -95,7 +78,6 @@ class _MenuState extends State<Menu> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
         onTap: _onItemTapped,
       ),
     );
