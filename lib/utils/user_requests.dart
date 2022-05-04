@@ -4,6 +4,7 @@ import 'package:piggram_mobile/data/follow.dart';
 import 'package:piggram_mobile/data/profile.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/utils/follow_requests.dart';
+import 'package:piggram_mobile/utils/post_requests.dart';
 
 class UserRequests {
   static final CollectionReference<UserData> usersRef =
@@ -54,14 +55,7 @@ class UserRequests {
     List<FollowData> followers = await FollowRequests.getFollowers(id);
     List<FollowData> following = await FollowRequests.getFollowing(id);
 
-    //get posts from firebase
-    // TODO: Change this to post data list for profile
-    var postsDoc = await FirebaseFirestore.instance
-        .collection("post")
-        .where("userId", isEqualTo: id)
-        .get();
-
-    var _posts = postsDoc.docs.map((post) => post.data()).toList();
+    var _posts = await PostRequests.getPostByUserId(id);
 
     return ProfileData(
         user: _user,

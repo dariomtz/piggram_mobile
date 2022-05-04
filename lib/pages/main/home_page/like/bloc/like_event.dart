@@ -24,3 +24,12 @@ class LikeRemoveEvent extends LikeEvent {
   @override
   List<Object> get props => [postId];
 }
+
+class LikeRefreshEvent extends LikeEvent {
+  final String postId;
+
+  LikeRefreshEvent(this.postId);
+
+  @override
+  List<Object> get props => [postId];
+}

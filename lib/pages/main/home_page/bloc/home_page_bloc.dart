@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/user.dart';
@@ -23,16 +24,15 @@ class HomePageBloc extends Bloc<HomePageEvent, HomePageState> {
     try {
       List<PostData> posts = await PostRequests.getPosts();
       List<List<UserData>> likes = [];
+      List<bool> likeds = [];
       for (var post in posts) {
         var likespost = await LikesRequests.getByPostId(post.id);
-        List<UserData> usersLikes = [];
-        for (var like in likespost) {
-          usersLikes.add((await UserRequests.findById(like.userId)).data()!);
-        }
-        likes.add(usersLikes);
+        likes.add((await LikesRequests.getUsersfromList(likespost)));
+        likeds.add((await LikesRequests.exist(
+            post.id!, FirebaseAuth.instance.currentUser!.uid)));
       }
 
-      emit(HomePageLoadedState(posts: posts, likes: likes));
+      emit(HomePageLoadedState(posts: posts, likes: likes, likeds: likeds));
     } catch (e) {
       print(e);
       emit(HomePageErrorState());

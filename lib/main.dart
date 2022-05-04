@@ -11,6 +11,7 @@ import 'package:piggram_mobile/pages/main/create_post_page/bloc/post_bloc.dart';
 import 'package:piggram_mobile/pages/main/create_post_page/file/bloc/file_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
 import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
+import 'package:piggram_mobile/pages/main/home_page/share/bloc/share_bloc.dart';
 import 'package:piggram_mobile/pages/main/menu.dart';
 import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
 import 'package:piggram_mobile/pages/main/search_page/bloc/search_page_bloc.dart';
@@ -34,6 +35,7 @@ void main() async {
     BlocProvider(create: (context) => LikeBloc()),
     BlocProvider(create: (context) => FollowsBloc()),
     BlocProvider(create: (context) => CommentsBloc()),
+    BlocProvider(create: (context) => ShareBloc()),
   ], child: const MyApp()));
 }
 

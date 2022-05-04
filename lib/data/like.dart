@@ -13,6 +13,6 @@ class LikeData {
             userId: json["userId"]! as String);
 
   Map<String, Object?> toJson() {
-    return {postId: postId, userId: userId};
+    return {"postId": postId, "userId": userId};
   }
 }

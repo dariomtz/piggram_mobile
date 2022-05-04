@@ -1,8 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:piggram_mobile/data/post.dart';
-import 'package:piggram_mobile/utils/comment_requests.dart';
-import 'package:piggram_mobile/utils/likes_requests.dart';
 import 'package:piggram_mobile/utils/user_requests.dart';
 
 class PostRequests {
@@ -22,15 +19,16 @@ class PostRequests {
     for (var post in posts) {
       var userdoc = await UserRequests.findById(post.userId);
       post.user = userdoc.data();
+    }
+    return posts;
+  }
 
-      //Get likes of post
-      post.likes = (await LikesRequests.getByPostId(post.id)).length;
-
-      post.liked = (await LikesRequests.find(
-              post.id, FirebaseAuth.instance.currentUser!.uid)) !=
-          null;
-      //Get list of comments
-      post.comments = (await CommentRequests.getByPostId(post.id!)).length;
+  static Future<List<PostData>> getPostByUserId(String userId) async {
+    var postsDoc = await postReq.where("userId", isEqualTo: userId).get();
+    var posts = postsDoc.docs.map((e) => e.data()).toList();
+    for (var post in posts) {
+      var userdoc = await UserRequests.findById(post.userId);
+      post.user = userdoc.data();
     }
     return posts;
   }

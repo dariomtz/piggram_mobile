@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
-import 'package:piggram_mobile/pages/main/home_page/home_page.dart';
+import 'package:piggram_mobile/pages/main/home_page/posts.dart';
 
 class CommentPage extends StatefulWidget {
   final PostData post;
   final List<UserData> likes;
-  CommentPage({Key? key, required this.post, required this.likes})
+  final bool liked;
+  CommentPage(
+      {Key? key, required this.post, required this.likes, required this.liked})
       : super(key: key);
   final TextEditingController _commentController = TextEditingController();
   @override
@@ -31,6 +33,7 @@ class _CommentPageState extends State<CommentPage> {
                   child: Post(
                     post: this.widget.post,
                     likes: widget.likes,
+                    liked: widget.liked,
                     showComment: false,
                   ),
                 ),
@@ -48,6 +51,7 @@ class _CommentPageState extends State<CommentPage> {
                   child: Post(
                     post: this.widget.post,
                     likes: widget.likes,
+                    liked: widget.liked,
                     showComment: false,
                   ),
                 ),
