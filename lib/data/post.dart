@@ -4,11 +4,8 @@ import 'package:piggram_mobile/data/user.dart';
 class PostData {
   final String? id;
   UserData? user;
-  bool? liked;
   final String description, image, userId;
   final DateTime publishedAt;
-  int? likes;
-  int? comments;
 
   PostData(
       {this.id,

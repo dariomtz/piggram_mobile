@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/profile.dart';
+import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
+import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
 import 'package:piggram_mobile/pages/follows/bloc/follows_bloc.dart';
 import 'package:piggram_mobile/pages/follows/follows_page.dart';
+import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
 import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -123,7 +127,6 @@ class Profile extends StatelessWidget {
                   )))
               .toList(),
         ),
-        //TODO: Add indicator when no posts
         PictureMiniatureList(
           posts: profileData.posts,
         ),
@@ -133,7 +136,7 @@ class Profile extends StatelessWidget {
 }
 
 class PictureMiniatureList extends StatelessWidget {
-  final List<Map<String, dynamic>> posts;
+  final List<PostData> posts;
   const PictureMiniatureList({
     Key? key,
     required this.posts,
@@ -154,7 +157,7 @@ class PictureMiniatureList extends StatelessWidget {
         }
         row = [];
       }
-      row.add(PictureMiniature(url: posts[i]["image"]));
+      row.add(PictureMiniature(post: posts[i]));
     }
     if (row.isNotEmpty) {
       column.add(
@@ -163,29 +166,47 @@ class PictureMiniatureList extends StatelessWidget {
         ),
       );
     }
-    return Column(
-      children: column,
-    );
+    return column.length != 0
+        ? Column(
+            children: column,
+          )
+        : Center(
+            child: Text("There are no post to show"),
+          );
   }
 }
 
 class PictureMiniature extends StatelessWidget {
-  final String url;
-  const PictureMiniature({
-    Key? key,
-    required this.url,
-  }) : super(key: key);
+  final PostData post;
+  const PictureMiniature({Key? key, required this.post}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration:
-          BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
-      child: Image.network(
-        url,
-        width: MediaQuery.of(context).size.width * 0.327,
-        height: MediaQuery.of(context).size.width * 0.327,
-        fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: ((context) => CommentPage(
+                  post: this.post,
+                  likes: [],
+                  liked: false,
+                )),
+          ),
+        );
+        BlocProvider.of<LikeBloc>(context).add(LikeRefreshEvent(this.post.id!));
+        BlocProvider.of<CommentsBloc>(context)
+            .add(CommentsLoadEvent(this.post.id!));
+      },
+      child: Container(
+        decoration:
+            BoxDecoration(border: Border.all(color: Colors.white, width: 1)),
+        child: Image.network(
+          post.image,
+          width: MediaQuery.of(context).size.width * 0.327,
+          height: MediaQuery.of(context).size.width * 0.327,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
