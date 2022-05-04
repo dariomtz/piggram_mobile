@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
-import 'package:piggram_mobile/pages/main/create_post_page/file/image_handler.dart';
+import 'package:piggram_mobile/components/file/image_handler.dart';
 
 class FirstSignIn extends StatelessWidget {
   FirstSignIn(
@@ -28,7 +28,7 @@ class FirstSignIn extends StatelessWidget {
         TextEditingController(text: this.description);
 
     return Scaffold(
-      appBar: AppBar(title: Text('First SignIn')),
+      appBar: AppBar(title: Text('Complete Registration')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

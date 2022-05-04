@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
-import 'package:piggram_mobile/pages/main/home_page/posts.dart';
+import 'package:piggram_mobile/components/posts.dart';
 
 class CommentPage extends StatefulWidget {
   final PostData post;
@@ -25,61 +25,63 @@ class _CommentPageState extends State<CommentPage> {
       body: SizedBox(
         height: MediaQuery.of(context).size.height * 0.8,
         child: BlocConsumer<CommentsBloc, CommentsState>(
-            builder: (context, state) {
-          if (state is CommentsLoadingState) {
-            return ListView(
-              children: [
-                Card(
-                  child: Post(
-                    post: this.widget.post,
-                    likes: widget.likes,
-                    liked: widget.liked,
-                    showComment: false,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              ],
-            );
-          }
-          if (state is CommentsLoadedState) {
-            return ListView(
-              children: [
-                Card(
-                  child: Post(
-                    post: this.widget.post,
-                    likes: widget.likes,
-                    liked: widget.liked,
-                    showComment: false,
-                  ),
-                ),
-                ...state.comments.map(
-                  (comment) => Card(
-                    child: Column(
-                      children: [
-                        UserCard(
-                            userId: comment.userId,
-                            userImageURL: comment.user!.photoUrl,
-                            userName: comment.user!.username),
-                        Text(comment.description),
-                      ],
+          builder: (context, state) {
+            if (state is CommentsLoadingState) {
+              return ListView(
+                children: [
+                  Card(
+                    child: Post(
+                      post: this.widget.post,
+                      likes: widget.likes,
+                      liked: widget.liked,
+                      showComment: false,
                     ),
                   ),
-                ),
-              ],
-            );
-          }
-          return Container();
-        }, listener: (context, state) {
-          if (state is CommentsCreatedState) {
-            widget._commentController.text = '';
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(SnackBar(content: Text("Comment created")));
-          }
-        }),
+                  Padding(
+                    padding: const EdgeInsets.all(32.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                ],
+              );
+            }
+            if (state is CommentsLoadedState) {
+              return ListView(
+                children: [
+                  Card(
+                    child: Post(
+                      post: this.widget.post,
+                      likes: widget.likes,
+                      liked: widget.liked,
+                      showComment: false,
+                    ),
+                  ),
+                  ...state.comments.map(
+                    (comment) => Card(
+                      child: Column(
+                        children: [
+                          UserCard(
+                              userId: comment.userId,
+                              userImageURL: comment.user!.photoUrl,
+                              userName: comment.user!.username),
+                          Text(comment.description),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
+            return Container();
+          },
+          listener: (context, state) {
+            if (state is CommentsCreatedState) {
+              widget._commentController.text = '';
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(SnackBar(content: Text("Comment created")));
+            }
+          },
+        ),
       ),
       bottomSheet: CreateComment(
         postId: widget.post.id!,

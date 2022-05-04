@@ -15,33 +15,36 @@ class SearchPage extends StatelessWidget {
     return ListView(children: [
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: TextField(
-          onChanged: (value) => BlocProvider.of<SearchPageBloc>(context)
-              .add(SearchPageSearchEvent(nameQuery: _nameController.text)),
-          decoration: InputDecoration(
-            hintText: "Insert username",
-            prefixIcon: Icon(Icons.search),
+        child: Card(
+          child: TextField(
+            onChanged: (value) => BlocProvider.of<SearchPageBloc>(context)
+                .add(SearchPageSearchEvent(nameQuery: _nameController.text)),
+            decoration: InputDecoration(
+              fillColor: Colors.white,
+              hintText: "Insert username",
+              prefixIcon: Icon(Icons.search),
+            ),
+            controller: _nameController,
           ),
-          controller: _nameController,
         ),
       ),
-      BlocConsumer<SearchPageBloc, SearchPageState>(
-          builder: (context, state) {
-            if (state is SearchPageLoadingState) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (state is SearchPageEmptyState) {
-              return Center(child: Text("No se encontraron resultados"));
-            }
-            if (state is SearchPageInitial) {
-              return Container();
-            }
-            if (state is SearchPageResultState) {
-              return SearchResultList(users: state.users);
-            }
-            return Center(child: Text("Something went wrong try again"));
-          },
-          listener: (context, state) {})
+      BlocBuilder<SearchPageBloc, SearchPageState>(
+        builder: (context, state) {
+          if (state is SearchPageLoadingState) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is SearchPageEmptyState) {
+            return Center(child: Text("No se encontraron resultados"));
+          }
+          if (state is SearchPageInitial) {
+            return Container();
+          }
+          if (state is SearchPageResultState) {
+            return SearchResultList(users: state.users);
+          }
+          return Center(child: Text("Something went wrong try again"));
+        },
+      ),
     ]);
   }
 }
@@ -81,25 +84,28 @@ class UserCardItem extends StatelessWidget {
         Navigator.push(context,
             MaterialPageRoute(builder: ((context) => OtherUserProfile())));
       },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  user.displayName,
-                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                ),
-                Text("@${user.username}")
-              ],
-            )
-          ],
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child:
+                    CircleAvatar(backgroundImage: NetworkImage(user.photoUrl)),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    user.displayName,
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                  Text("@${user.username}")
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

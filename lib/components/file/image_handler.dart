@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:piggram_mobile/pages/main/create_post_page/file/bloc/file_bloc.dart';
+import 'package:piggram_mobile/components/file/bloc/file_bloc.dart';
 
 class ImageHandeler extends StatelessWidget {
   const ImageHandeler({
@@ -18,61 +18,9 @@ class ImageHandeler extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        BlocConsumer<FileBloc, FileState>(
-            builder: (context, state) {
-              if (state is FileInitial) {
-                return AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(117, 39, 39, 39),
-                    ),
-                    constraints: const BoxConstraints.expand(),
-                    child: const Center(
-                      child: Text(
-                        "No image found",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                );
-              }
-              if (state is FileImageFound) {
-                onLoaded(state.image);
-                return AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: GestureDetector(
-                    onTap: () => showDialog(
-                        context: context,
-                        builder: (context) => ImageDialog(
-                              image: state.image,
-                            )),
-                    child: SingleChildScrollView(
-                      child: Image.memory(
-                        state.image,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                );
-              }
-              if (state is FileUploading) {
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(117, 39, 39, 39),
-                    ),
-                    constraints: const BoxConstraints.expand(),
-                    child: const Center(
-                      child: Text(
-                        "Uploading",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                );
-              }
+        BlocBuilder<FileBloc, FileState>(
+          builder: (context, state) {
+            if (state is FileInitial) {
               return AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Container(
@@ -82,14 +30,66 @@ class ImageHandeler extends StatelessWidget {
                   constraints: const BoxConstraints.expand(),
                   child: const Center(
                     child: Text(
-                      "...",
+                      "No image found",
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
               );
-            },
-            listener: (context, state) {}),
+            }
+            if (state is FileImageFound) {
+              onLoaded(state.image);
+              return AspectRatio(
+                aspectRatio: 16 / 9,
+                child: GestureDetector(
+                  onTap: () => showDialog(
+                      context: context,
+                      builder: (context) => ImageDialog(
+                            image: state.image,
+                          )),
+                  child: SingleChildScrollView(
+                    child: Image.memory(
+                      state.image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              );
+            }
+            if (state is FileUploading) {
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(117, 39, 39, 39),
+                  ),
+                  constraints: const BoxConstraints.expand(),
+                  child: const Center(
+                    child: Text(
+                      "Uploading",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              );
+            }
+            return AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(117, 39, 39, 39),
+                ),
+                constraints: const BoxConstraints.expand(),
+                child: const Center(
+                  child: Text(
+                    "...",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,

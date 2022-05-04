@@ -3,8 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/pages/main/create_post_page/bloc/post_bloc.dart';
-import 'package:piggram_mobile/pages/main/create_post_page/file/bloc/file_bloc.dart';
-import 'package:piggram_mobile/pages/main/create_post_page/file/image_handler.dart';
+import 'package:piggram_mobile/components/file/bloc/file_bloc.dart';
+import 'package:piggram_mobile/components/file/image_handler.dart';
 
 class CreatePostPage extends StatefulWidget {
   CreatePostPage({Key? key}) : super(key: key);
@@ -34,6 +34,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             child: TextField(
               controller: _descriptionController,
               decoration: InputDecoration(
+                fillColor: Colors.white,
                 labelText: "Description",
                 filled: true,
                 hintText: "Insert description",
@@ -55,23 +56,26 @@ class _CreatePostPageState extends State<CreatePostPage> {
             },
             child: Text('Create'),
           ),
-          BlocConsumer<PostBloc, PostState>(builder: (context, state) {
-            return Container();
-          }, listener: (context, state) {
-            if (state is PostUploadedState) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text("Post Uploaded")));
-              BlocProvider.of<FileBloc>(context).add(FileCleanEvent());
-              this.image = null;
-              this._descriptionController.text = '';
-            }
-            if (state is PostErrorState) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(SnackBar(content: Text(state.error)));
-            }
-          })
+          BlocConsumer<PostBloc, PostState>(
+            builder: (context, state) {
+              return Container();
+            },
+            listener: (context, state) {
+              if (state is PostUploadedState) {
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text("Post Uploaded")));
+                BlocProvider.of<FileBloc>(context).add(FileCleanEvent());
+                this.image = null;
+                this._descriptionController.text = '';
+              }
+              if (state is PostErrorState) {
+                ScaffoldMessenger.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(SnackBar(content: Text(state.error)));
+              }
+            },
+          )
         ],
       ),
     );

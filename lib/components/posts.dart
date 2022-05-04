@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
-import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
-import 'package:piggram_mobile/pages/main/home_page/share/bloc/share_bloc.dart';
+import 'package:piggram_mobile/components/like/bloc/like_bloc.dart';
+import 'package:piggram_mobile/components/share/bloc/share_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/other_user_profile.dart';
 import 'package:piggram_mobile/data/post.dart';

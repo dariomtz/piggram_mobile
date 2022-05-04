@@ -30,6 +30,6 @@ class ShareBloc extends Bloc<ShareEvent, ShareState> {
     //share image
     Share.shareFiles([imagePath.path],
         text:
-            'See want is happening in piggram:\n${event.post.user!.username}: ${event.post.description}');
+            'See what is happening in piggram:\n@${event.post.user!.username}: ${event.post.description}');
   }
 }
