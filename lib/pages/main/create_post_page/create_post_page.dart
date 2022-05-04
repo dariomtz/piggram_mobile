@@ -55,6 +55,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               }
             },
             child: Text('Create'),
+            style: ElevatedButton.styleFrom(primary: Colors.red),
           ),
           BlocConsumer<PostBloc, PostState>(
             builder: (context, state) {

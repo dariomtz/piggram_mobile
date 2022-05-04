@@ -31,95 +31,118 @@ class _PostState extends State<Post> {
   final ScreenshotController controller = ScreenshotController();
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(16),
-      child: Column(
-        children: [
-          PostHead(
-            post: widget.post,
-            controller: controller,
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                BlocBuilder<LikeBloc, LikeState>(
-                  builder: (context, state) {
-                    if (state is LikeDoneState) {
-                      if (this.widget.post.id == state.postId) {
-                        this.widget.likes = state.likes;
-                        this.widget.liked = state.liked;
-                      }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        PostHead(
+          post: widget.post,
+          controller: controller,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              BlocBuilder<LikeBloc, LikeState>(
+                builder: (context, state) {
+                  if (state is LikeDoneState) {
+                    if (this.widget.post.id == state.postId) {
+                      this.widget.likes = state.likes;
+                      this.widget.liked = state.liked;
                     }
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.5,
-                            height: 50,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: this.widget.likes.length,
-                                itemBuilder: (context, ind) =>
-                                    CircularIcon(user: widget.likes[ind]))),
-                        GestureDetector(
-                          onTap: () {
-                            if (this.widget.liked == true) {
-                              BlocProvider.of<LikeBloc>(context)
-                                  .add(LikeRemoveEvent(this.widget.post.id!));
-                            } else {
-                              BlocProvider.of<LikeBloc>(context)
-                                  .add(LikeAddEvent(this.widget.post.id!));
-                            }
-                          },
-                          child: PostActionButton(
-                            icon: Icons.thumb_up,
-                            text: '${this.widget.likes.length}',
-                            color: (this.widget.liked) ? Colors.blue : null,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-                this.widget.showComment
-                    ? GestureDetector(
+                  }
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // SizedBox(
+                      //     width: MediaQuery.of(context).size.width * 0.5,
+                      //     height: 50,
+                      //     child: ListView.builder(
+                      //         scrollDirection: Axis.horizontal,
+                      //         itemCount: this.widget.likes.length,
+                      //         itemBuilder: (context, ind) =>
+                      //             CircularIcon(user: widget.likes[ind]))),
+                      GestureDetector(
                         onTap: () {
-                          BlocProvider.of<CommentsBloc>(context)
-                              .add(CommentsLoadEvent(this.widget.post.id!));
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: ((context) => CommentPage(
-                                  post: this.widget.post,
-                                  liked: widget.liked,
-                                  likes: this.widget.likes)),
-                            ),
-                          );
+                          if (this.widget.liked == true) {
+                            BlocProvider.of<LikeBloc>(context)
+                                .add(LikeRemoveEvent(this.widget.post.id!));
+                          } else {
+                            BlocProvider.of<LikeBloc>(context)
+                                .add(LikeAddEvent(this.widget.post.id!));
+                          }
                         },
                         child: PostActionButton(
-                          icon: Icons.comment,
-                          text: '',
+                          icon: Icons.favorite,
+                          text: '${this.widget.likes.length}',
+                          color: (this.widget.liked) ? Colors.red : null,
                         ),
-                      )
-                    : Container(),
-                GestureDetector(
+                      ),
+                    ],
+                  );
+                },
+              ),
+              this.widget.showComment
+                  ? GestureDetector(
+                      onTap: () {
+                        BlocProvider.of<CommentsBloc>(context)
+                            .add(CommentsLoadEvent(this.widget.post.id!));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) => CommentPage(
+                                post: this.widget.post,
+                                liked: widget.liked,
+                                likes: this.widget.likes)),
+                          ),
+                        );
+                      },
+                      child: PostActionButton(
+                        icon: Icons.comment,
+                        text: '',
+                      ),
+                    )
+                  : Container(),
+              GestureDetector(
+                onTap: () {
+                  BlocProvider.of<ShareBloc>(context).add(ShareSendEvent(
+                      post: widget.post, controller: controller));
+                },
+                child: PostActionButton(
+                  icon: Icons.share,
+                  text: '',
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: GestureDetector(
                   onTap: () {
-                    BlocProvider.of<ShareBloc>(context).add(ShareSendEvent(
-                        post: widget.post, controller: controller));
+                    BlocProvider.of<OtherUserProfileBloc>(context)
+                        .add(OtherUserProfileLoad(userId: widget.post.userId));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: ((context) => OtherUserProfile())));
                   },
-                  child: PostActionButton(
-                    icon: Icons.share,
-                    text: '',
+                  child: Text(
+                    widget.post.user!.username,
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-              ],
-            ),
-          )
-        ],
-      ),
+              ),
+              Text(widget.post.description),
+            ],
+          ),
+        ),
+        Divider(),
+      ],
     );
   }
 }
@@ -144,16 +167,9 @@ class PostHead extends StatelessWidget {
           userName: post.user!.username,
           userId: post.userId,
         ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: Center(
-              child: Screenshot(
-                  controller: controller, child: Image.network(post.image))),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(post.description),
-        ),
+        Center(
+            child: Screenshot(
+                controller: controller, child: Image.network(post.image))),
       ],
     );
   }
@@ -219,8 +235,8 @@ class UserCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
+    return GestureDetector(
+      onTap: () {
         BlocProvider.of<OtherUserProfileBloc>(context)
             .add(OtherUserProfileLoad(userId: userId));
         Navigator.push(context,
