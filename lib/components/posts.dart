@@ -129,7 +129,9 @@ class _PostState extends State<Post> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: ((context) => OtherUserProfile())));
+                            builder: ((context) => OtherUserProfile(
+                                  username: widget.post.user!.username,
+                                ))));
                   },
                   child: Text(
                     widget.post.user!.username,
@@ -239,8 +241,12 @@ class UserCard extends StatelessWidget {
       onTap: () {
         BlocProvider.of<OtherUserProfileBloc>(context)
             .add(OtherUserProfileLoad(userId: userId));
-        Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => OtherUserProfile())));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: ((context) => OtherUserProfile(
+                      username: userName,
+                    ))));
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
