@@ -21,7 +21,10 @@ class _CommentPageState extends State<CommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Comments")),
+      appBar: AppBar(
+        title: Text("Comments"),
+        elevation: 0,
+      ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height * 0.8,
         child: BlocConsumer<CommentsBloc, CommentsState>(
@@ -29,13 +32,11 @@ class _CommentPageState extends State<CommentPage> {
             if (state is CommentsLoadingState) {
               return ListView(
                 children: [
-                  Card(
-                    child: Post(
-                      post: this.widget.post,
-                      likes: widget.likes,
-                      liked: widget.liked,
-                      showComment: false,
-                    ),
+                  Post(
+                    post: this.widget.post,
+                    likes: widget.likes,
+                    liked: widget.liked,
+                    showComment: false,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(32.0),
@@ -47,13 +48,11 @@ class _CommentPageState extends State<CommentPage> {
             if (state is CommentsLoadedState) {
               return ListView(
                 children: [
-                  Card(
-                    child: Post(
-                      post: this.widget.post,
-                      likes: widget.likes,
-                      liked: widget.liked,
-                      showComment: false,
-                    ),
+                  Post(
+                    post: this.widget.post,
+                    likes: widget.likes,
+                    liked: widget.liked,
+                    showComment: false,
                   ),
                   ...state.comments.map(
                     (comment) => Card(
