@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/user.dart';
-import 'package:piggram_mobile/pages/main/home_page/posts.dart';
+import 'package:piggram_mobile/components/posts.dart';
 import 'package:piggram_mobile/pages/main/home_page/bloc/home_page_bloc.dart';
 
 class HomePage extends StatelessWidget {
@@ -12,27 +12,27 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        BlocConsumer<HomePageBloc, HomePageState>(
-            builder: (context, state) {
-              if (state is HomePageLoadingState) {
-                return Padding(
-                  padding: const EdgeInsets.all(32.0),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-              if (state is HomePageErrorState) {
-                return Center(child: Text('Something went wrong try again'));
-              }
-              if (state is HomePageLoadedState) {
-                return PostList(
-                  posts: state.posts,
-                  likes: state.likes,
-                  likeds: state.likeds,
-                );
-              }
-              return Container();
-            },
-            listener: (context, state) {})
+        BlocBuilder<HomePageBloc, HomePageState>(
+          builder: (context, state) {
+            if (state is HomePageLoadingState) {
+              return Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
+            }
+            if (state is HomePageErrorState) {
+              return Center(child: Text('Something went wrong try again'));
+            }
+            if (state is HomePageLoadedState) {
+              return PostList(
+                posts: state.posts,
+                likes: state.likes,
+                likeds: state.likeds,
+              );
+            }
+            return Container();
+          },
+        ),
       ],
     );
   }

@@ -6,14 +6,14 @@ import 'package:equatable/equatable.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:piggram_mobile/utils/file_requests.dart';
-import 'package:piggram_mobile/utils/user_auth_repository.dart';
+import 'package:piggram_mobile/utils/auth_requests.dart';
 import 'package:piggram_mobile/utils/user_requests.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final UserAuthRepository _userAuth = UserAuthRepository();
+  final AuthRequests _userAuth = AuthRequests();
   AuthBloc() : super(AuthInitial()) {
     on<AuthSignInEmailEvent>(_signInEmail);
     on<AuthVerifySignInEvent>(_verifySignIn);

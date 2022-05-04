@@ -6,7 +6,7 @@ import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
 import 'package:piggram_mobile/pages/follows/bloc/follows_bloc.dart';
 import 'package:piggram_mobile/pages/follows/follows_page.dart';
-import 'package:piggram_mobile/pages/main/home_page/like/bloc/like_bloc.dart';
+import 'package:piggram_mobile/components/like/bloc/like_bloc.dart';
 import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -52,70 +52,80 @@ class Profile extends StatelessWidget {
     return ListView(
       children: [
         Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(children: [
-            Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: NetworkImage(profileData.user.photoUrl),
-                )),
-            ProfileStat(
-              num: profileData.posts.length,
-              name: 'Posts',
+          padding: const EdgeInsets.all(6.0),
+          child: Card(
+            child: Column(
+              children: [
+                Row(children: [
+                  Padding(
+                      padding: const EdgeInsets.only(right: 8.0, left: 8.0),
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            NetworkImage(profileData.user.photoUrl),
+                      )),
+                  ProfileStat(
+                    num: profileData.posts.length,
+                    name: 'Posts',
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
+                          followers: profileData.followers,
+                          following: profileData.following));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => FollowsPage(
+                                    username: profileData.user.username,
+                                    showFollowers: true,
+                                  ))));
+                    },
+                    child: ProfileStat(
+                      num: profileData.followers.length,
+                      name: 'Followers',
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
+                          followers: profileData.followers,
+                          following: profileData.following));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: ((context) => FollowsPage(
+                                  username: profileData.user.username,
+                                  showFollowers: false))));
+                    },
+                    child: ProfileStat(
+                      num: profileData.following.length,
+                      name: 'Following',
+                    ),
+                  ),
+                ]),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 6.0, right: 6.0, bottom: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        profileData.user.displayName,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      Text(
+                        '@' + profileData.user.username,
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic, fontSize: 15),
+                      ),
+                      Text(profileData.user.description),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            GestureDetector(
-              onTap: () {
-                BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
-                    followers: profileData.followers,
-                    following: profileData.following));
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) => FollowsPage(
-                              username: profileData.user.username,
-                              showFollowers: true,
-                            ))));
-              },
-              child: ProfileStat(
-                num: profileData.followers.length,
-                name: 'Followers',
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                BlocProvider.of<FollowsBloc>(context).add(FollowsLoad(
-                    followers: profileData.followers,
-                    following: profileData.following));
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) => FollowsPage(
-                            username: profileData.user.username,
-                            showFollowers: false))));
-              },
-              child: ProfileStat(
-                num: profileData.following.length,
-                name: 'Following',
-              ),
-            ),
-          ]),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                profileData.user.displayName,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-              Text(
-                '@' + profileData.user.username,
-                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 15),
-              ),
-              Text(profileData.user.description),
-            ],
           ),
         ),
         Row(

@@ -58,8 +58,21 @@ class _MenuState extends State<Menu> {
           ),
         ],
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: Stack(
+        children: [
+          FractionallySizedBox(
+            widthFactor: 1,
+            heightFactor: 1,
+            child: Image.network(
+              //Photo by Eva Elijas: https://www.pexels.com/photo/pattern-texture-abstract-design-7605100/
+              "https://images.pexels.com/photos/7605100/pexels-photo-7605100.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+              fit: BoxFit.cover,
+            ),
+          ),
+          Center(
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

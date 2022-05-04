@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:piggram_mobile/data/follow.dart';
-import 'package:piggram_mobile/utils/user_auth_repository.dart';
+import 'package:piggram_mobile/utils/auth_requests.dart';
 
 class FollowRequests {
   static final CollectionReference<FollowData> followsRef =
@@ -27,12 +27,12 @@ class FollowRequests {
 
   static final follow = (String id, bool follow) async {
     if (follow) {
-      await followsRef.add(FollowData(
-          followee: id, follower: UserAuthRepository.currentUserId()));
+      await followsRef.add(
+          FollowData(followee: id, follower: AuthRequests.currentUserId()));
     } else {
       QuerySnapshot<FollowData> follows = await followsRef
           .where(followee, isEqualTo: id)
-          .where(follower, isEqualTo: UserAuthRepository.currentUserId())
+          .where(follower, isEqualTo: AuthRequests.currentUserId())
           .get();
 
       follows.docs.forEach((element) => element.reference.delete());
@@ -42,7 +42,7 @@ class FollowRequests {
   static final amIFollowing = (String id) async {
     QuerySnapshot<FollowData> follows = await followsRef
         .where(followee, isEqualTo: id)
-        .where(follower, isEqualTo: UserAuthRepository.currentUserId())
+        .where(follower, isEqualTo: AuthRequests.currentUserId())
         .get();
     return follows.docs.length != 0;
   };
