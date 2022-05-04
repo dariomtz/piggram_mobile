@@ -4,7 +4,8 @@ import 'package:piggram_mobile/pages/main/profile_page/profile_page.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
 
 class OtherUserProfile extends StatelessWidget {
-  const OtherUserProfile({Key? key}) : super(key: key);
+  final String username;
+  const OtherUserProfile({Key? key, required this.username}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
