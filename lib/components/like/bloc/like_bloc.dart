@@ -11,26 +11,19 @@ part 'like_state.dart';
 
 class LikeBloc extends Bloc<LikeEvent, LikeState> {
   LikeBloc() : super(LikeInitial()) {
-    on<LikeAddEvent>(_onAdd);
-    on<LikeRemoveEvent>(_onRemove);
+    on<LikeChangeEvent>(_onChange);
     on<LikeRefreshEvent>(_onRefresh);
   }
 
-  FutureOr<void> _onAdd(LikeAddEvent event, Emitter<LikeState> emit) async {
+  FutureOr<void> _onChange(
+      LikeChangeEvent event, Emitter<LikeState> emit) async {
     emit(LikeInitial());
     var userId = FirebaseAuth.instance.currentUser!.uid;
-    await LikesRequests.create(event.postId, userId);
-    var liked = await LikesRequests.exist(event.postId, userId);
-    var likes = await LikesRequests.getByPostId(event.postId);
-    List<UserData> users = await LikesRequests.getUsersfromList(likes);
-    emit(LikeDoneState(postId: event.postId, likes: users, liked: liked));
-  }
-
-  FutureOr<void> _onRemove(
-      LikeRemoveEvent event, Emitter<LikeState> emit) async {
-    emit(LikeInitial());
-    var userId = FirebaseAuth.instance.currentUser!.uid;
-    await LikesRequests.delete(event.postId, userId);
+    if (event.liked) {
+      await LikesRequests.create(event.postId, userId);
+    } else {
+      await LikesRequests.delete(event.postId, userId);
+    }
     var liked = await LikesRequests.exist(event.postId, userId);
     var likes = await LikesRequests.getByPostId(event.postId);
     List<UserData> users = await LikesRequests.getUsersfromList(likes);

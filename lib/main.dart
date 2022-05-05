@@ -46,13 +46,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'PigGram',
+        title: 'FoodShare',
         theme: ThemeData(
           brightness: Brightness.light,
           primaryColor: Colors.red,
           primarySwatch: Colors.red,
           appBarTheme: AppBarTheme(
             color: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black),
             titleTextStyle: TextStyle(
               color: Colors.black,
               fontSize: 25,

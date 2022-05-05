@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/pages/main/profile_page/profile_page.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/utils/auth_requests.dart';
 
 class OtherUserProfile extends StatelessWidget {
-  const OtherUserProfile({Key? key}) : super(key: key);
+  final String username;
+  const OtherUserProfile({Key? key, required this.username}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text(username),
+        elevation: 0.0,
+      ),
       body: BlocBuilder<OtherUserProfileBloc, OtherUserProfileState>(
         builder: (context, state) {
           if (state is OtherUserProfileLoading) {
@@ -21,6 +26,9 @@ class OtherUserProfile extends StatelessWidget {
                 actions: [Center(child: CircularProgressIndicator())],
                 profileData: state.profileData);
           } else if (state is OtherUserProfileLoaded) {
+            if (state.profileData.id == AuthRequests.currentUserId()) {
+              return ProfilePage();
+            }
             return Profile(actions: [
               state.follow
                   ? OutlinedButton(

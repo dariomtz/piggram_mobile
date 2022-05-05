@@ -8,7 +8,6 @@ import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/utils/likes_requests.dart';
 import 'package:piggram_mobile/utils/post_requests.dart';
-import 'package:piggram_mobile/utils/user_requests.dart';
 
 part 'home_page_event.dart';
 part 'home_page_state.dart';

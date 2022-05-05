@@ -161,7 +161,21 @@ class PictureMiniatureList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (posts.isEmpty) {
       return Center(
-        child: Text("There are no post to show"),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Icon(
+                Icons.no_photography_rounded,
+                size: 90,
+              ),
+            ),
+            Text(
+              "This user does not have any posts",
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
+        ),
       );
     }
 

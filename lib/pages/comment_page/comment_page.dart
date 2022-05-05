@@ -4,6 +4,8 @@ import 'package:piggram_mobile/data/post.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/components/posts.dart';
+import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/pages/other_user_profile/other_user_profile.dart';
 
 class CommentPage extends StatefulWidget {
   final PostData post;
@@ -21,7 +23,10 @@ class _CommentPageState extends State<CommentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Comments")),
+      appBar: AppBar(
+        title: Text("Comments"),
+        elevation: 0,
+      ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height * 0.8,
         child: BlocConsumer<CommentsBloc, CommentsState>(
@@ -29,13 +34,11 @@ class _CommentPageState extends State<CommentPage> {
             if (state is CommentsLoadingState) {
               return ListView(
                 children: [
-                  Card(
-                    child: Post(
-                      post: this.widget.post,
-                      likes: widget.likes,
-                      liked: widget.liked,
-                      showComment: false,
-                    ),
+                  Post(
+                    post: this.widget.post,
+                    likes: widget.likes,
+                    liked: widget.liked,
+                    showComment: false,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(32.0),
@@ -47,25 +50,17 @@ class _CommentPageState extends State<CommentPage> {
             if (state is CommentsLoadedState) {
               return ListView(
                 children: [
-                  Card(
-                    child: Post(
-                      post: this.widget.post,
-                      likes: widget.likes,
-                      liked: widget.liked,
-                      showComment: false,
-                    ),
+                  Post(
+                    post: this.widget.post,
+                    likes: widget.likes,
+                    liked: widget.liked,
+                    showComment: false,
                   ),
                   ...state.comments.map(
-                    (comment) => Card(
-                      child: Column(
-                        children: [
-                          UserCard(
-                              userId: comment.userId,
-                              userImageURL: comment.user!.photoUrl,
-                              userName: comment.user!.username),
-                          Text(comment.description),
-                        ],
-                      ),
+                    (comment) => Comment(
+                      userId: comment.userId,
+                      username: comment.user!.username,
+                      text: comment.description,
                     ),
                   ),
                 ],
@@ -86,6 +81,47 @@ class _CommentPageState extends State<CommentPage> {
       bottomSheet: CreateComment(
         postId: widget.post.id!,
         controller: widget._commentController,
+      ),
+    );
+  }
+}
+
+class Comment extends StatelessWidget {
+  final String userId, username, text;
+  const Comment(
+      {Key? key,
+      required this.userId,
+      required this.username,
+      required this.text})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              onTap: () {
+                BlocProvider.of<OtherUserProfileBloc>(context)
+                    .add(OtherUserProfileLoad(userId: userId));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) => OtherUserProfile(
+                              username: username,
+                            ))));
+              },
+              child: Text(
+                username,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          Text(text),
+        ],
       ),
     );
   }

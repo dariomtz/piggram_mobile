@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:piggram_mobile/data/follow.dart';
 import 'package:piggram_mobile/data/post.dart';
+import 'package:piggram_mobile/utils/auth_requests.dart';
+import 'package:piggram_mobile/utils/follow_requests.dart';
 import 'package:piggram_mobile/utils/user_requests.dart';
 
 class PostRequests {
@@ -13,8 +16,15 @@ class PostRequests {
           toFirestore: (post, _) => post.toJson());
 
   static Future<List<PostData>> getPosts() async {
-    var postDocs =
-        await postReq.limit(10).orderBy("publishedAt", descending: true).get();
+    List<String> following =
+        (await FollowRequests.getFollowing(AuthRequests.currentUserId()))
+            .map((follow) => follow.followee)
+            .toList();
+
+    var postDocs = await postReq
+        .where("userId", whereIn: following)
+        .orderBy("publishedAt", descending: true)
+        .get();
     var posts = postDocs.docs.map((e) => e.data()).toList();
     for (var post in posts) {
       var userdoc = await UserRequests.findById(post.userId);

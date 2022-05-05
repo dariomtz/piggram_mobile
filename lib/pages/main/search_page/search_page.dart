@@ -81,8 +81,12 @@ class UserCardItem extends StatelessWidget {
       onTap: () {
         BlocProvider.of<OtherUserProfileBloc>(context)
             .add(OtherUserProfileLoadByUsername(username: user.username));
-        Navigator.push(context,
-            MaterialPageRoute(builder: ((context) => OtherUserProfile())));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: ((context) => OtherUserProfile(
+                      username: user.username,
+                    ))));
       },
       child: Card(
         child: Padding(
