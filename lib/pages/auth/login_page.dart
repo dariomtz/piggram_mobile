@@ -16,8 +16,8 @@ class LoginPage extends StatelessWidget {
           FractionallySizedBox(
             widthFactor: 1,
             heightFactor: 1,
-            child: Image.network(
-              "https://www.gdlgo.com/wp-content/uploads/2021/07/Los-Mejores-Tacos-de-Guadalajara-.jpg",
+            child: Image.asset(
+              "assets/login_background.jpg",
               fit: BoxFit.fitHeight,
             ),
           ),
@@ -40,7 +40,26 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.4,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset(
+                    "assets/app_icon.png",
+                    height: MediaQuery.of(context).size.width * 0.3,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    "FoodShare",
+                    style: TextStyle(
+                        fontSize: 36,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(170, 255, 255, 255)),
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),

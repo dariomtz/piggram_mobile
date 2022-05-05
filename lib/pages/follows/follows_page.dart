@@ -94,7 +94,7 @@ List<Widget> transformToWidgets(List<UserData> users) {
         ),
       ),
       Center(
-          child: Text('There arent any users on this list',
+          child: Text('There are no users on this list',
               style: TextStyle(
                 fontSize: 20,
               ))),

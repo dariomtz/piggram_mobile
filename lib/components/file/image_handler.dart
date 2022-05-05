@@ -101,7 +101,7 @@ class ImageHandeler extends StatelessWidget {
                   BlocProvider.of<FileBloc>(context)
                       .add(FileGetImageEvent(ImageSource.camera));
                 },
-                child: Text("Tomar foto"),
+                child: Text("Take photo"),
               ),
             ),
             Padding(
@@ -111,7 +111,7 @@ class ImageHandeler extends StatelessWidget {
                   BlocProvider.of<FileBloc>(context)
                       .add(FileGetImageEvent(ImageSource.gallery));
                 },
-                child: Text("Buscar foto"),
+                child: Text("Search photo"),
               ),
             ),
           ],
