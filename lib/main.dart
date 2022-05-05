@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.red,
           appBarTheme: AppBarTheme(
             color: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black),
             titleTextStyle: TextStyle(
               color: Colors.black,
               fontSize: 25,
