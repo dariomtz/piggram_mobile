@@ -7,22 +7,14 @@ abstract class LikeEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LikeAddEvent extends LikeEvent {
+class LikeChangeEvent extends LikeEvent {
   final String postId;
+  final bool liked;
 
-  LikeAddEvent(this.postId);
+  LikeChangeEvent({required this.postId, required this.liked});
 
   @override
-  List<Object> get props => [postId];
-}
-
-class LikeRemoveEvent extends LikeEvent {
-  final String postId;
-
-  LikeRemoveEvent(this.postId);
-
-  @override
-  List<Object> get props => [postId];
+  List<Object> get props => [postId, liked];
 }
 
 class LikeRefreshEvent extends LikeEvent {
