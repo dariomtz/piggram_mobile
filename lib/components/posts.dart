@@ -116,33 +116,10 @@ class _PostState extends State<Post> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    BlocProvider.of<OtherUserProfileBloc>(context)
-                        .add(OtherUserProfileLoad(userId: widget.post.userId));
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: ((context) => OtherUserProfile(
-                                  username: widget.post.user!.username,
-                                ))));
-                  },
-                  child: Text(
-                    widget.post.user!.username,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Text(widget.post.description),
-            ],
-          ),
-        ),
+        Comment(
+            userId: widget.post.userId,
+            username: widget.post.user!.username,
+            text: widget.post.description),
         Divider(),
       ],
     );
