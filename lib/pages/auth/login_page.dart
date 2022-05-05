@@ -20,10 +20,6 @@ class LoginPage extends StatelessWidget {
               "assets/login_background.jpg",
               fit: BoxFit.fitHeight,
             ),
-            // Image.network(
-            //   "https://www.gdlgo.com/wp-content/uploads/2021/07/Los-Mejores-Tacos-de-Guadalajara-.jpg",
-            //fit: BoxFit.fitHeight,
-            //),
           ),
           Container(
             color: Color.fromARGB(175, 0, 0, 0),
@@ -55,7 +51,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 Center(
                   child: Text(
-                    "FoodGram",
+                    "FoodShare",
                     style: TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.bold,
