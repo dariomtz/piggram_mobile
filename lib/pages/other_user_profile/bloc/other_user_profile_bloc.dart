@@ -50,7 +50,8 @@ class OtherUserProfileBloc
     try {
       await FollowRequests.follow(event.profile.id, event.follow);
       emit(OtherUserProfileLoaded(
-          profileData: event.profile, follow: event.follow));
+          profileData: await event.profile.updatedFollows(),
+          follow: event.follow));
     } catch (e) {
       print(e);
       emit(OtherUserProfileError());
