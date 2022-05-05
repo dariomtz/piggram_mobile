@@ -3,6 +3,7 @@ import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
 import 'package:piggram_mobile/components/like/bloc/like_bloc.dart';
 import 'package:piggram_mobile/components/share/bloc/share_bloc.dart';
+import 'package:piggram_mobile/pages/liked_by/liked_by_page.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/other_user_profile.dart';
 import 'package:piggram_mobile/data/post.dart';
@@ -12,8 +13,8 @@ import 'package:screenshot/screenshot.dart';
 
 class Post extends StatefulWidget {
   final PostData post;
-  List<UserData> likes;
-  bool liked;
+  final List<UserData> likes;
+  final bool liked;
   final bool showComment;
   Post(
       {Key? key,
@@ -28,6 +29,16 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  late List<UserData> likes;
+  late bool liked;
+
+  @override
+  void initState() {
+    likes = widget.likes;
+    liked = widget.liked;
+    super.initState();
+  }
+
   final ScreenshotController controller = ScreenshotController();
   @override
   Widget build(BuildContext context) {
@@ -38,83 +49,65 @@ class _PostState extends State<Post> {
           post: widget.post,
           controller: controller,
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              BlocBuilder<LikeBloc, LikeState>(
-                builder: (context, state) {
-                  if (state is LikeDoneState) {
-                    if (this.widget.post.id == state.postId) {
-                      this.widget.likes = state.likes;
-                      this.widget.liked = state.liked;
-                    }
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            BlocListener<LikeBloc, LikeState>(
+              listener: (context, state) {
+                if (state is LikeDoneState) {
+                  if (this.widget.post.id == state.postId) {
+                    setState(() {
+                      likes = state.likes;
+                      liked = state.liked;
+                    });
                   }
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      // SizedBox(
-                      //     width: MediaQuery.of(context).size.width * 0.5,
-                      //     height: 50,
-                      //     child: ListView.builder(
-                      //         scrollDirection: Axis.horizontal,
-                      //         itemCount: this.widget.likes.length,
-                      //         itemBuilder: (context, ind) =>
-                      //             CircularIcon(user: widget.likes[ind]))),
-                      GestureDetector(
-                        onTap: () {
-                          if (this.widget.liked == true) {
-                            BlocProvider.of<LikeBloc>(context)
-                                .add(LikeRemoveEvent(this.widget.post.id!));
-                          } else {
-                            BlocProvider.of<LikeBloc>(context)
-                                .add(LikeAddEvent(this.widget.post.id!));
-                          }
-                        },
-                        child: PostActionButton(
-                          icon: Icons.favorite,
-                          text: '${this.widget.likes.length}',
-                          color: (this.widget.liked) ? Colors.red : null,
-                        ),
-                      ),
-                    ],
+                }
+              },
+              child: IconButton(
+                onPressed: () {
+                  BlocProvider.of<LikeBloc>(context).add(LikeChangeEvent(
+                      postId: this.widget.post.id!, liked: !liked));
+                },
+                icon: Icon((liked) ? Icons.favorite : Icons.favorite_outline),
+                color: (liked) ? Colors.red : null,
+              ),
+            ),
+            if (this.widget.showComment)
+              IconButton(
+                onPressed: () {
+                  BlocProvider.of<CommentsBloc>(context)
+                      .add(CommentsLoadEvent(this.widget.post.id!));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) => CommentPage(
+                          post: this.widget.post,
+                          liked: widget.liked,
+                          likes: likes)),
+                    ),
                   );
                 },
+                icon: Icon(Icons.comment),
               ),
-              this.widget.showComment
-                  ? GestureDetector(
-                      onTap: () {
-                        BlocProvider.of<CommentsBloc>(context)
-                            .add(CommentsLoadEvent(this.widget.post.id!));
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: ((context) => CommentPage(
-                                post: this.widget.post,
-                                liked: widget.liked,
-                                likes: this.widget.likes)),
-                          ),
-                        );
-                      },
-                      child: PostActionButton(
-                        icon: Icons.comment,
-                        text: '',
-                      ),
-                    )
-                  : Container(),
-              GestureDetector(
-                onTap: () {
-                  BlocProvider.of<ShareBloc>(context).add(ShareSendEvent(
-                      post: widget.post, controller: controller));
-                },
-                child: PostActionButton(
-                  icon: Icons.share,
-                  text: '',
-                ),
+            IconButton(
+              onPressed: () {
+                BlocProvider.of<ShareBloc>(context).add(
+                    ShareSendEvent(post: widget.post, controller: controller));
+              },
+              icon: Icon(Icons.share),
+            ),
+            Text("Liked by "),
+            GestureDetector(
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: ((context) => LikedByPage(users: likes)))),
+              child: Text(
+                "${likes.length} ${likes.length == 1 ? "person" : "people"}",
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-            ],
-          ),
+            )
+          ],
         ),
         Comment(
             userId: widget.post.userId,
@@ -169,35 +162,6 @@ class CircularIcon extends StatelessWidget {
       child: CircleAvatar(
         radius: 20,
         backgroundImage: NetworkImage(this.user.photoUrl),
-      ),
-    );
-  }
-}
-
-class PostActionButton extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final Color? color;
-  const PostActionButton({
-    Key? key,
-    required this.icon,
-    required this.text,
-    this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            color: color,
-            size: 30,
-          ),
-          Text(text)
-        ],
       ),
     );
   }
