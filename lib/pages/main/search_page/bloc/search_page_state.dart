@@ -15,11 +15,20 @@ class SearchPageEmptyState extends SearchPageState {}
 
 class SearchPageErrorState extends SearchPageState {}
 
-class SearchPageResultState extends SearchPageState {
+class SearchPageUserResultState extends SearchPageState {
   final List<UserData> users;
 
-  SearchPageResultState({required this.users});
+  SearchPageUserResultState({required this.users});
 
   @override
   List<Object> get props => [users];
+}
+
+class SearchPageHashtagResultState extends SearchPageState {
+  final List<String> tags;
+
+  SearchPageHashtagResultState({required this.tags});
+
+  @override
+  List<Object> get props => [tags];
 }
