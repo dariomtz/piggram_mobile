@@ -120,7 +120,7 @@ class Comment extends StatelessWidget {
               ),
             ),
           ),
-          Text(text),
+          Flexible(child: Text(text)),
         ],
       ),
     );
