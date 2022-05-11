@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:piggram_mobile/components/like/like_icon.dart';
 import 'package:piggram_mobile/pages/comment_page/bloc/comments_bloc.dart';
 import 'package:piggram_mobile/pages/comment_page/comment_page.dart';
 import 'package:piggram_mobile/components/like/bloc/like_bloc.dart';
@@ -68,7 +69,7 @@ class _PostState extends State<Post> {
                   BlocProvider.of<LikeBloc>(context).add(LikeChangeEvent(
                       postId: this.widget.post.id!, liked: !liked));
                 },
-                icon: Icon((liked) ? Icons.favorite : Icons.favorite_outline),
+                icon: LikeIcon(liked: liked),
                 color: (liked) ? Colors.red : null,
               ),
             ),

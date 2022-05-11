@@ -2,10 +2,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
 import 'package:piggram_mobile/components/file/image_handler.dart';
 
-class FirstSignIn extends StatelessWidget {
+class FirstSignIn extends StatefulWidget {
   FirstSignIn(
       {Key? key,
       this.image,
@@ -20,21 +21,44 @@ class FirstSignIn extends StatelessWidget {
   DateTime? dateOfBirth;
 
   @override
-  Widget build(BuildContext context) {
-    this.dateOfBirth = DateTime.now();
-    final _nameController = TextEditingController(text: this.name);
-    final _usernameController = TextEditingController(text: this.username);
-    final _descriptionController =
-        TextEditingController(text: this.description);
+  State<FirstSignIn> createState() => _FirstSignInState();
+}
 
+class _FirstSignInState extends State<FirstSignIn> {
+  final DateFormat formatter = DateFormat('dd/MM/yyyy');
+  late DateTime? dateOfBirth;
+  late TextEditingController _nameController;
+  late TextEditingController _usernameController;
+  late TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    dateOfBirth = this.widget.dateOfBirth;
+    _nameController = TextEditingController(text: this.widget.name);
+    _usernameController = TextEditingController(text: this.widget.username);
+    _descriptionController =
+        TextEditingController(text: this.widget.description);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _usernameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Complete Registration')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            ImageHandeler(onLoaded: (image) {
-              this.image = image;
+            ImageHandeler(onLoaded: (img) {
+              this.widget.image = img;
             }),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -69,35 +93,44 @@ class FirstSignIn extends StatelessWidget {
                 ),
               ),
             ),
-            ElevatedButton(
+            if (dateOfBirth != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(child: Text(formatter.format(dateOfBirth!))),
+              ),
+            ElevatedButton.icon(
+              icon: Icon(Icons.calendar_month),
               onPressed: () async {
                 final DateTime? selected = await showDatePicker(
                   context: context,
-                  initialDate: this.dateOfBirth!,
+                  initialDate: dateOfBirth ?? DateTime.now(),
                   firstDate: DateTime(1920),
                   lastDate: DateTime.now(),
                 );
                 if (selected != null) {
-                  this.dateOfBirth = selected;
+                  setState(() {
+                    dateOfBirth = selected;
+                  });
                 }
               },
-              child: Text('Set birthday'),
+              label: Text('${dateOfBirth != null ? "Change" : "Set"} birthday'),
             ),
-            ElevatedButton(
+            ElevatedButton.icon(
+              icon: Icon(Icons.arrow_forward),
               onPressed: () {
                 try {
                   BlocProvider.of<AuthBloc>(context).add(AuthCreateUserEvent(
                       name: _nameController.text,
                       username: _usernameController.text,
                       description: _descriptionController.text,
-                      image: image!,
+                      image: this.widget.image!,
                       dateOfBirth: dateOfBirth!));
                 } catch (err) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text("Not all fields are filled")));
                 }
               },
-              child: Text('Continue'),
+              label: Text('Continue'),
             ),
           ],
         ),

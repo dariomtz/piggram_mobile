@@ -42,7 +42,8 @@ class UserRequests {
         description: description,
         photoUrl: image,
         dateOfBirth: dateOfBirth,
-        creationTimestamp: DateTime.now());
+        creationTimestamp: DateTime.now(),
+        mode: "burger");
     await usersRef.doc(FirebaseAuth.instance.currentUser!.uid).set(user);
     return true;
   };
@@ -100,5 +101,9 @@ class UserRequests {
         .docs
         .map((user) => user.data())
         .toList();
+  };
+
+  static final updateUser = (String id, UserData user) {
+    usersRef.doc(id).set(user);
   };
 }

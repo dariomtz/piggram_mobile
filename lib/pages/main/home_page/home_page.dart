@@ -51,14 +51,28 @@ class PostList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> posts = [];
+    if (posts.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 100.0),
+        child: Column(
+          children: [
+            Icon(
+              Icons.person_add,
+              size: 90,
+            ),
+            Text("Follow people to see posts here"),
+          ],
+        ),
+      );
+    }
+    List<Widget> _posts = [];
     for (var i = 0; i < this.posts.length; i++) {
-      posts.add(Post(
+      _posts.add(Post(
           post: this.posts[i], likes: this.likes[i], liked: this.likeds[i]));
     }
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: posts,
+      children: _posts,
     );
   }
 }

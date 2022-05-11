@@ -42,7 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthSignedInState());
     } else {
       emit(AuthFirstSignInState(
-          description: "Hey, I'm using PigGram",
+          description: "Hey, I'm using FoodShare",
           name: FirebaseAuth.instance.currentUser?.displayName));
     }
   }
@@ -56,7 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthSignedInState());
       } else {
         emit(AuthFirstSignInState(
-            description: "Hey, I'm using PigGram",
+            description: "Hey, I'm using FoodShare",
             name: FirebaseAuth.instance.currentUser?.displayName));
       }
     } else {
@@ -81,7 +81,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return;
     }
     emit(AuthFirstSignInState(
-        description: "Hey, I'm using PigGram",
+        description: "Hey, I'm using FoodShare",
         name: FirebaseAuth.instance.currentUser?.displayName));
   }
 
@@ -97,7 +97,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthSignedInState());
       } else {
         emit(AuthFirstSignInState(
-            description: "Hey, I'm using PigGram",
+            description: "Hey, I'm using FoodShare",
             name: FirebaseAuth.instance.currentUser?.displayName));
       }
     } catch (err) {
@@ -118,6 +118,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   FutureOr<void> _create(
       AuthCreateUserEvent event, Emitter<AuthState> emit) async {
+    emit(AuthInitial());
     try {
       String? url = await FileRequests.uploadImage(event.image);
       if (url == null) {
