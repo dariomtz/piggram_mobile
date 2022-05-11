@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:piggram_mobile/data/user.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/other_user_profile.dart';
+import 'package:piggram_mobile/pages/tag_page/bloc/tag_page_bloc.dart';
 import 'package:piggram_mobile/pages/tag_page/tag_page.dart';
 
 import 'bloc/search_page_bloc.dart';
@@ -188,6 +189,7 @@ class TagCardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        BlocProvider.of<TagPageBloc>(context).add(TagPageLoadEvent(tag: tag));
         Navigator.push(
           context,
           MaterialPageRoute(

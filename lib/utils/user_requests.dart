@@ -68,16 +68,18 @@ class UserRequests {
   static final searchUser = (String query) async {
     //find by name
     var _docs = await usersRef
-        .where("name", isGreaterThan: query)
-        .where("name", isLessThan: query + '\uf8ff')
+        .where("name", isGreaterThanOrEqualTo: query)
+        .where("name",
+            isLessThan: query.substring(0, query.length - 1) + '\uf8ff')
         .get();
     var _users = _docs.docs.map((doc) => doc.data()).toList();
     var _userset = _users.map((e) => e.username).toSet();
 
     //find by username
     _docs = await usersRef
-        .where("username", isGreaterThan: query)
-        .where("username", isLessThan: query + '\uf8ff')
+        .where("username", isGreaterThanOrEqualTo: query)
+        .where("username",
+            isLessThan: query.substring(0, query.length - 1) + '\uf8ff')
         .get();
 
     //join results

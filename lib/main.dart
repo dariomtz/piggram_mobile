@@ -16,6 +16,7 @@ import 'package:piggram_mobile/pages/main/menu.dart';
 import 'package:piggram_mobile/pages/main/profile_page/bloc/profile_page_bloc.dart';
 import 'package:piggram_mobile/pages/main/search_page/bloc/search_page_bloc.dart';
 import 'package:piggram_mobile/pages/other_user_profile/bloc/other_user_profile_bloc.dart';
+import 'package:piggram_mobile/pages/tag_page/bloc/tag_page_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,7 @@ void main() async {
     BlocProvider(create: (context) => FollowsBloc()),
     BlocProvider(create: (context) => CommentsBloc()),
     BlocProvider(create: (context) => ShareBloc()),
+    BlocProvider(create: (context) => TagPageBloc()),
   ], child: const MyApp()));
 }
 

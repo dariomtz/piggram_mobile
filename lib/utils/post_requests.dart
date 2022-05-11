@@ -49,6 +49,19 @@ class PostRequests {
     return posts;
   }
 
+  static Future<List<PostData>> getPostByTag(String tag) async {
+    var postsDoc = await postReq
+        .where("tags", arrayContains: tag)
+        .orderBy("publishedAt", descending: true)
+        .get();
+    var posts = postsDoc.docs.map((e) => e.data()).toList();
+    for (var post in posts) {
+      var userdoc = await UserRequests.findById(post.userId);
+      post.user = userdoc.data();
+    }
+    return posts;
+  }
+
   static create(
       {required String description,
       required String image,
@@ -80,8 +93,9 @@ class PostRequests {
 
   static Future<List<String>> searchTag(String query) async {
     QuerySnapshot<TagData> querySnapshot = await tagsRef
-        .where("name", isGreaterThan: query)
-        .where("name", isLessThan: query + '\uf8ff')
+        .where("name", isGreaterThanOrEqualTo: query)
+        .where("name",
+            isLessThan: query.substring(0, query.length - 1) + '\uf8ff')
         .get();
 
     return querySnapshot.docs.map((snap) => snap.data().name).toList();

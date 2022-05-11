@@ -6,7 +6,7 @@ class PostData {
   UserData? user;
   final String description, image, userId;
   final DateTime publishedAt;
-  final List<String> tags;
+  final List<dynamic> tags;
 
   PostData(
       {this.id,
@@ -22,7 +22,8 @@ class PostData {
             image: json["image"] as String,
             userId: json["userId"] as String,
             publishedAt: (json["publishedAt"] as Timestamp).toDate(),
-            tags: json.containsKey("tags") ? json["tags"] as List<String> : []);
+            tags:
+                json.containsKey("tags") ? json["tags"] as List<dynamic> : []);
   Map<String, Object?> toJson() => {
         "description": description,
         "image": image,
