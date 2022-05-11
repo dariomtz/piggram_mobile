@@ -32,6 +32,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextField(
+              maxLines: 8,
               controller: _descriptionController,
               decoration: InputDecoration(
                 fillColor: Colors.white,

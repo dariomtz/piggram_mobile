@@ -21,18 +21,23 @@ class ImageHandeler extends StatelessWidget {
         BlocBuilder<FileBloc, FileState>(
           builder: (context, state) {
             if (state is FileInitial) {
-              return AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color.fromARGB(117, 39, 39, 39),
-                  ),
-                  constraints: const BoxConstraints.expand(),
-                  child: const Center(
-                    child: Text(
-                      "No image found",
-                      style: TextStyle(color: Colors.white),
-                    ),
+              return GestureDetector(
+                onTap: () => showDialog(
+                    context: context,
+                    builder: (context) => ImageOptionsDialog()),
+                child: AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        color: Color.fromARGB(117, 39, 39, 39),
+                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                    constraints: const BoxConstraints.expand(),
+                    child: const Center(
+                        child: Icon(
+                      Icons.add_a_photo,
+                      color: Colors.white,
+                      size: 50,
+                    )),
                   ),
                 ),
               );
@@ -90,32 +95,6 @@ class ImageHandeler extends StatelessWidget {
             );
           },
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  BlocProvider.of<FileBloc>(context)
-                      .add(FileGetImageEvent(ImageSource.camera));
-                },
-                child: Text("Take photo"),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  BlocProvider.of<FileBloc>(context)
-                      .add(FileGetImageEvent(ImageSource.gallery));
-                },
-                child: Text("Search photo"),
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -138,9 +117,48 @@ class ImageDialog extends StatelessWidget {
       actions: [
         TextButton(
             onPressed: () {
+              BlocProvider.of<FileBloc>(context).add(FileCleanEvent());
               Navigator.of(context).pop();
             },
-            child: Text('ok'))
+            child: Text('Discard')),
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Keep'))
+      ],
+    );
+  }
+}
+
+class ImageOptionsDialog extends StatelessWidget {
+  const ImageOptionsDialog({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text('Upload a foto'),
+      content: Text("Choose an upload option"),
+      actions: [
+        TextButton(
+            onPressed: () {
+              BlocProvider.of<FileBloc>(context)
+                  .add(FileGetImageEvent(ImageSource.camera));
+              Navigator.of(context).pop();
+            },
+            child: Text('Camera')),
+        TextButton(
+            onPressed: () {
+              BlocProvider.of<FileBloc>(context)
+                  .add(FileGetImageEvent(ImageSource.gallery));
+              Navigator.of(context).pop();
+            },
+            child: Text('Gallery')),
+        ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancel'))
       ],
     );
   }
