@@ -7,10 +7,20 @@ abstract class SearchPageEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class SearchPageSearchEvent extends SearchPageEvent {
+class SearchPageSearchUserEvent extends SearchPageEvent {
   final String nameQuery;
 
-  SearchPageSearchEvent({required this.nameQuery});
+  SearchPageSearchUserEvent({required this.nameQuery});
   @override
   List<Object> get props => [nameQuery];
 }
+
+class SearchPageSearchHashtagEvent extends SearchPageEvent {
+  final String tagQuery;
+
+  SearchPageSearchHashtagEvent({required this.tagQuery});
+  @override
+  List<Object> get props => [tagQuery];
+}
+
+class SearchPageCleanEvent extends SearchPageEvent {}

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:piggram_mobile/data/follow.dart';
 import 'package:piggram_mobile/data/post.dart';
+import 'package:piggram_mobile/data/tag.dart';
 import 'package:piggram_mobile/utils/auth_requests.dart';
 import 'package:piggram_mobile/utils/follow_requests.dart';
 import 'package:piggram_mobile/utils/user_requests.dart';
@@ -14,6 +14,12 @@ class PostRequests {
             return PostData.fromJson(t);
           },
           toFirestore: (post, _) => post.toJson());
+
+  static final CollectionReference<TagData> tagsRef = FirebaseFirestore.instance
+      .collection("tags")
+      .withConverter(
+          fromFirestore: ((snap, _) => TagData.fromJson(snap.data()!)),
+          toFirestore: (tag, _) => tag.toJson());
 
   static Future<List<PostData>> getPosts() async {
     List<String> following =
@@ -47,11 +53,37 @@ class PostRequests {
       {required String description,
       required String image,
       required String userId}) async {
+    List<String> tags = description
+        .split(" #")
+        .map(
+          (e) => e.split(" ")[0],
+        )
+        .toList()
+        .sublist(1);
+
+    tags.forEach((tag) {
+      PostRequests.createTag(tag);
+    });
+
     await postReq.add(PostData.fromJson({
       "description": description,
       "image": image,
       "userId": userId,
-      "publishedAt": Timestamp.fromDate(DateTime.now())
+      "publishedAt": Timestamp.fromDate(DateTime.now()),
+      "tags": tags,
     }));
+  }
+
+  static createTag(String tag) {
+    tagsRef.add(TagData(name: tag));
+  }
+
+  static Future<List<String>> searchTag(String query) async {
+    QuerySnapshot<TagData> querySnapshot = await tagsRef
+        .where("name", isGreaterThan: query)
+        .where("name", isLessThan: query + '\uf8ff')
+        .get();
+
+    return querySnapshot.docs.map((snap) => snap.data().name).toList();
   }
 }
