@@ -11,45 +11,53 @@ class OtherUserProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(username),
-        elevation: 0.0,
-      ),
-      body: BlocBuilder<OtherUserProfileBloc, OtherUserProfileState>(
-        builder: (context, state) {
-          if (state is OtherUserProfileLoading) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (state is OtherUserProfileLoadingFollow) {
-            return Profile(
-                actions: [Center(child: CircularProgressIndicator())],
-                profileData: state.profileData);
-          } else if (state is OtherUserProfileLoaded) {
-            if (state.profileData.id == AuthRequests.currentUserId()) {
-              return ProfilePage();
+    return WillPopScope(
+      onWillPop: () async {
+        BlocProvider.of<OtherUserProfileBloc>(context)
+            .add(OtherUserProfilePopAndLoad());
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(username),
+          elevation: 0.0,
+        ),
+        body: BlocBuilder<OtherUserProfileBloc, OtherUserProfileState>(
+          builder: (context, state) {
+            if (state is OtherUserProfileLoading) {
+              return Center(child: CircularProgressIndicator());
             }
-            return Profile(actions: [
-              state.follow
-                  ? OutlinedButton.icon(
-                      icon: Icon(Icons.person_remove),
-                      onPressed: (() =>
-                          BlocProvider.of<OtherUserProfileBloc>(context).add(
-                              OtherUserProfileFollow(
-                                  profile: state.profileData, follow: false))),
-                      label: Text("Unfollow"))
-                  : ElevatedButton.icon(
-                      icon: Icon(Icons.person_add),
-                      onPressed: (() =>
-                          BlocProvider.of<OtherUserProfileBloc>(context).add(
-                              OtherUserProfileFollow(
-                                  profile: state.profileData, follow: true))),
-                      label: Text("Follow"))
-            ], profileData: state.profileData);
-          }
-          return Text('Something went wrong');
-        },
+
+            if (state is OtherUserProfileLoadingFollow) {
+              return Profile(
+                  actions: [Center(child: CircularProgressIndicator())],
+                  profileData: state.profileData);
+            } else if (state is OtherUserProfileLoaded) {
+              if (state.profileData.id == AuthRequests.currentUserId()) {
+                return ProfilePage();
+              }
+              return Profile(actions: [
+                state.follow
+                    ? OutlinedButton.icon(
+                        icon: Icon(Icons.person_remove),
+                        onPressed: (() =>
+                            BlocProvider.of<OtherUserProfileBloc>(context).add(
+                                OtherUserProfileFollow(
+                                    profile: state.profileData,
+                                    follow: false))),
+                        label: Text("Unfollow"))
+                    : ElevatedButton.icon(
+                        icon: Icon(Icons.person_add),
+                        onPressed: (() =>
+                            BlocProvider.of<OtherUserProfileBloc>(context).add(
+                                OtherUserProfileFollow(
+                                    profile: state.profileData, follow: true))),
+                        label: Text("Follow"))
+              ], profileData: state.profileData);
+            }
+            return Text('Something went wrong');
+          },
+        ),
       ),
     );
   }
