@@ -14,11 +14,12 @@ class OtherUserProfileLoading extends OtherUserProfileState {}
 class OtherUserProfileLoaded extends OtherUserProfileState {
   final ProfileData profileData;
   final bool follow;
+  final List<List<dynamic>> stack;
   const OtherUserProfileLoaded(
-      {required this.profileData, required this.follow});
+      {required this.profileData, required this.follow, required this.stack});
 
   @override
-  List<Object> get props => [profileData, follow];
+  List<Object> get props => [profileData, follow, stack];
 }
 
 class OtherUserProfileLoadingFollow extends OtherUserProfileState {

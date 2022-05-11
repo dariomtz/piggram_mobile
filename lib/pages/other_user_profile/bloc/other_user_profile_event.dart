@@ -23,6 +23,8 @@ class OtherUserProfileLoadByUsername extends OtherUserProfileEvent {
   List<Object> get props => [username];
 }
 
+class OtherUserProfilePopAndLoad extends OtherUserProfileEvent {}
+
 class OtherUserProfileFollow extends OtherUserProfileEvent {
   final bool follow;
   final ProfileData profile;
