@@ -89,7 +89,12 @@ class PostRequests {
     }));
   }
 
-  static createTag(String tag) {
+  static createTag(String tag) async {
+    QuerySnapshot<TagData> querySnapshot =
+        await tagsRef.where("name", isEqualTo: tag).get();
+    if (querySnapshot.docs.isNotEmpty) {
+      return;
+    }
     tagsRef.add(TagData(name: tag));
   }
 
