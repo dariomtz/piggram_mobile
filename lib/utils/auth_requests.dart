@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRequests {
@@ -33,8 +32,6 @@ class AuthRequests {
     GoogleSignInAccount? googleUser;
     try {
       googleUser = await _googleSignIn.signIn();
-    } on PlatformException catch (err) {
-      googleUser = null;
     } catch (err) {
       googleUser = null;
     }

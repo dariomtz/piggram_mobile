@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:piggram_mobile/components/like/bloc/mode_bloc.dart';
 import 'package:piggram_mobile/pages/auth/bloc/auth_bloc.dart';
 import 'package:piggram_mobile/pages/auth/first_sign_in.dart';
 import 'package:piggram_mobile/pages/auth/login_page.dart';
@@ -38,6 +39,7 @@ void main() async {
     BlocProvider(create: (context) => CommentsBloc()),
     BlocProvider(create: (context) => ShareBloc()),
     BlocProvider(create: (context) => TagPageBloc()),
+    BlocProvider(create: (context) => ModeBloc()..add(ModeLoadEvent())),
   ], child: const MyApp()));
 }
 
@@ -84,8 +86,10 @@ class MyApp extends StatelessWidget {
                 image: state.image,
               );
             }
-            return Center(
-              child: CircularProgressIndicator(),
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           },
           listener: (context, state) {
@@ -96,6 +100,9 @@ class MyApp extends StatelessWidget {
                   content: Text(state.error),
                 ),
               );
+            }
+            if (state is AuthInitial) {
+              BlocProvider.of<FileBloc>(context).add(FileCleanEvent());
             }
           },
         ));

@@ -26,7 +26,9 @@ class PostRequests {
         (await FollowRequests.getFollowing(AuthRequests.currentUserId()))
             .map((follow) => follow.followee)
             .toList();
-
+    if (following.isEmpty) {
+      return [];
+    }
     var postDocs = await postReq
         .where("userId", whereIn: following)
         .orderBy("publishedAt", descending: true)

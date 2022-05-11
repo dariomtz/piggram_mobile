@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 @immutable
 class UserData {
-  final String displayName, photoUrl, username, description;
+  final String displayName, photoUrl, username, description, mode;
   final DateTime creationTimestamp, dateOfBirth;
 
   const UserData({
@@ -13,6 +13,7 @@ class UserData {
     required this.creationTimestamp,
     required this.dateOfBirth,
     required this.username,
+    required this.mode,
   });
 
   UserData.fromJson(Map<String, Object?> json)
@@ -23,6 +24,7 @@ class UserData {
           description: json["description"]! as String,
           creationTimestamp: (json["creationTimestamp"]! as Timestamp).toDate(),
           dateOfBirth: (json["dateOfBirth"]! as Timestamp).toDate(),
+          mode: json.containsKey("mode") ? json["mode"]! as String : "burger",
         );
 
   Map<String, Object?> toJson() {
@@ -33,6 +35,17 @@ class UserData {
       "description": description,
       "creationTimestamp": Timestamp.fromDate(creationTimestamp),
       "dateOfBirth": Timestamp.fromDate(dateOfBirth),
+      "mode": mode,
     };
   }
+
+  UserData.changeMode(UserData user, String newMode)
+      : this(
+            creationTimestamp: user.creationTimestamp,
+            displayName: user.displayName,
+            username: user.username,
+            photoUrl: user.photoUrl,
+            description: user.description,
+            dateOfBirth: user.dateOfBirth,
+            mode: newMode);
 }

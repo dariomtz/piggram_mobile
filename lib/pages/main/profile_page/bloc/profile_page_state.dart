@@ -11,6 +11,15 @@ class ProfilePageInitial extends ProfilePageState {}
 
 class ProfilePageLoadingState extends ProfilePageState {}
 
+class ProfilePageLoadingModeState extends ProfilePageState {
+  final ProfileData profileData;
+
+  ProfilePageLoadingModeState({required this.profileData});
+
+  @override
+  List<Object> get props => [profileData];
+}
+
 class ProfilePageErrorState extends ProfilePageState {}
 
 class ProfilePageLoadedState extends ProfilePageState {
