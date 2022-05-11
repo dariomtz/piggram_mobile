@@ -36,12 +36,14 @@ class _MenuState extends State<Menu> {
           .add(ProfilePageGetProfileEvent());
     }
   ];
-  static List<String> appbarTitles = [
-    'FoodShare',
-    'New post',
-    'Search',
-    'My profile',
+
+  List<Widget> appbarTitles = [
+    AppBarTitle(word1: "Food", word2: "Share"),
+    AppBarTitle(word1: "New", word2: "Post"),
+    AppBarTitle(word1: "", word2: "Search"),
+    AppBarTitle(word1: "My", word2: "Profile"),
   ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -54,7 +56,7 @@ class _MenuState extends State<Menu> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        title: Text(appbarTitles.elementAt(_selectedIndex)),
+        title: appbarTitles.elementAt(_selectedIndex),
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
@@ -80,6 +82,31 @@ class _MenuState extends State<Menu> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
       ),
+    );
+  }
+}
+
+class AppBarTitle extends StatelessWidget {
+  final String word1, word2;
+  const AppBarTitle({Key? key, required this.word1, required this.word2})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(word1),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            "assets/app_icon.png",
+            height: 30,
+            width: 30,
+          ),
+        ),
+        Text(word2),
+      ],
     );
   }
 }
