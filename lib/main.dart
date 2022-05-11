@@ -104,6 +104,12 @@ class MyApp extends StatelessWidget {
             if (state is AuthInitial) {
               BlocProvider.of<FileBloc>(context).add(FileCleanEvent());
             }
+            if (state is AuthSignedInState) {
+              BlocProvider.of<ModeBloc>(context).add(ModeLoadEvent());
+              BlocProvider.of<HomePageBloc>(context).add(HomePageLoadEvent());
+              BlocProvider.of<SearchPageBloc>(context)
+                  .add(SearchPageCleanEvent());
+            }
           },
         ));
   }
