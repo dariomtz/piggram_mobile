@@ -42,7 +42,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ),
             ),
           ),
-          ElevatedButton(
+          ElevatedButton.icon(
+            icon: Icon(Icons.add),
             onPressed: () {
               try {
                 BlocProvider.of<PostBloc>(context).add(PostSubmitEvent(
@@ -55,8 +56,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       SnackBar(content: Text("Not all fields are filled")));
               }
             },
-            child: Text('Create'),
-            style: ElevatedButton.styleFrom(primary: Colors.red),
+            label: Text('Create'),
           ),
           BlocConsumer<PostBloc, PostState>(
             builder: (context, state) {
