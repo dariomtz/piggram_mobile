@@ -32,18 +32,20 @@ class OtherUserProfile extends StatelessWidget {
             }
             return Profile(actions: [
               state.follow
-                  ? OutlinedButton(
+                  ? OutlinedButton.icon(
+                      icon: Icon(Icons.person_remove),
                       onPressed: (() =>
                           BlocProvider.of<OtherUserProfileBloc>(context).add(
                               OtherUserProfileFollow(
                                   profile: state.profileData, follow: false))),
-                      child: Text("Unfollow"))
-                  : ElevatedButton(
+                      label: Text("Unfollow"))
+                  : ElevatedButton.icon(
+                      icon: Icon(Icons.person_add),
                       onPressed: (() =>
                           BlocProvider.of<OtherUserProfileBloc>(context).add(
                               OtherUserProfileFollow(
                                   profile: state.profileData, follow: true))),
-                      child: Text("Follow"))
+                      label: Text("Follow"))
             ], profileData: state.profileData);
           }
           return Text('Something went wrong');
