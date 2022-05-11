@@ -15,6 +15,14 @@ class FileGetImageEvent extends FileEvent {
   List<Object> get props => [source];
 }
 
+class FileGetInitialsEvent extends FileEvent {
+  final String name;
+
+  FileGetInitialsEvent(this.name);
+  @override
+  List<Object> get props => [name];
+}
+
 class FileUploadImageEvent extends FileEvent {
   final Uint8List image;
 

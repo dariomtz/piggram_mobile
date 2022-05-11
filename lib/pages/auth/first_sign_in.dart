@@ -57,12 +57,16 @@ class _FirstSignInState extends State<FirstSignIn> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            ImageHandeler(onLoaded: (img) {
-              this.widget.image = img;
-            }),
+            ImageHandeler(
+                initials: true,
+                name: _nameController.text,
+                onLoaded: (img) {
+                  this.widget.image = img;
+                }),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                onChanged: ((value) => setState(() {})),
                 controller: _nameController,
                 decoration: InputDecoration(
                   labelText: "Name",
